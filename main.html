@@ -47,7 +47,97 @@
       </div>
     </section>
 
-    <section>
+
+
+
+
+
+    <section id="carousel">
+      <div class="logo-carousel">
+  <div class="logo-track" id="logoTrack"></div>
+</div>
+
+<style>
+.logo-carousel {
+  overflow: hidden;
+  width: 100%;
+  background: #fff;
+  padding: 16px 0;
+  position: relative;
+}
+.logo-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  will-change: transform;
+}
+.logo-track img {
+  height: 64px;
+  width: auto;
+  margin-right: 40px;
+  filter: grayscale(100%) opacity(0.85);
+  transition: filter .2s, transform .2s;
+}
+.logo-track img:hover {
+  filter: grayscale(0%) opacity(1);
+  transform: scale(1.25);
+}
+</style>
+
+<script>
+const LOGOS = [
+  "https://upload.wikimedia.org/wikipedia/en/6/6d/Legia_Warsaw_logo.svg",
+  "img/1SO logo.jpg",
+  "https://football-logos.cc/logos/poland/700x700/lech-poznan.png",
+  "img/TE logo.jpg",
+  "https://upload.wikimedia.org/wikipedia/de/8/81/Pogon_Szczecin.svg",
+];
+
+// Duplikujemy logo aby płynnie zapętlić przesuwanie
+const carousel = document.getElementById('logoTrack');
+const wrapper = carousel.parentNode;
+
+function fillLogos() {
+  const baseLogos = [...LOGOS];
+  carousel.innerHTML = '';
+  let repetitions = 2;
+  do {
+    baseLogos.forEach(src => {
+      const img = document.createElement('img');
+      img.src = src;
+      carousel.appendChild(img);
+    });
+    repetitions++;
+  } while (carousel.scrollWidth < wrapper.offsetWidth * 2); // powielamy aż "tor" jest dużo dłuższy od widoku
+}
+fillLogos();
+
+// Płynne przesuwanie
+let position = 0;
+const speed = 1.2; // px na klatkę (zmień w razie potrzeby)
+let speedLocked = false;
+
+function animate() {
+  if (!speedLocked) position -= speed;
+  const logoWidth = carousel.scrollWidth / 2;
+  if (Math.abs(position) >= logoWidth) position = 0;
+  carousel.style.transform = `translateX(${position}px)`;
+  requestAnimationFrame(animate);
+}
+
+// Obsługa zatrzymania na hover
+carousel.parentNode.addEventListener('mouseenter', () => speedLocked = true);
+carousel.parentNode.addEventListener('mouseleave', () => speedLocked = false);
+
+animate();
+</script>
+
+
+    </section>
+
+
+
+    <section id="brands-slider">
         <div class="logos1">
             <div class="logos1-mask">
                 <div class="logos1-track">
@@ -91,13 +181,16 @@
         </div>
     </section>
 
+
+
+
+
+
     <section id="portfolio" class="portfolio">
         <h2>Portfolio marki</h2>
         <div class="portfolio-grid">
             <a href="brand_Legia_Warszawa.html"><img src="https://upload.wikimedia.org/wikipedia/en/6/6d/Legia_Warsaw_logo.svg" alt="Legia Warszawa"></a>
             <a href="brand4.html"><img src="https://football-logos.cc/logos/poland/700x700/lech-poznan.png" alt="Lech Poznań"></a>
-            <!-- <a href="brand1.html"><img src="img/lwHerb.png" alt="Brand 1"></a> -->
-            <!-- <a href="brand1.html"><img src="img/lwHerb.png" alt="Brand 1"></a> -->
             <a href="brand2.html"><img src="https://via.placeholder.com/150" alt="Brand 2"></a>
             <a href="brand3.html"><img src="https://via.placeholder.com/150" alt="Brand 3"></a>
             <a href="brand4.html"><img src="https://via.placeholder.com/150" alt="Brand 4"></a>
@@ -138,6 +231,7 @@
     </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+<!-- Skrypt do ładowania i parsowania pliku CSV -->
 <script>
   function loadCSVFromUrl(url) {
     fetch(url)
