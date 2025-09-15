@@ -1,0 +1,80 @@
+body { font-family: Arial, sans-serif; background: #49A657; color: white; margin: 0; }
+    header {
+        display: flex; align-items: center; justify-content: space-between;
+        background: #222; padding: 10px 20px;
+    }
+    header img.brand-logo { height: 40px; }
+    header a { color: white; text-decoration: none; font-size: 1rem; }
+
+    .search-bar {
+        padding: 15px;
+        background: #1a1a1a;
+        display: flex;
+        justify-content: center;
+    }
+    .search-bar input {
+        padding: 8px;
+        font-size: 1rem;
+        width: 300px;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .category-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        background: #1a1a1a;
+        padding: 10px 20px;
+        justify-content: center;
+    }
+    .category-btn {
+        background: #333;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+    }
+    .category-btn:hover { background: #555; }
+    .category-btn.active { background: #8a2be2; }
+
+    .product-list {
+        max-width: 900px;
+        margin: 20px auto;
+    }
+    .product-card {
+        display: flex;
+        align-items: center;
+        background: #1e1e1e;
+        border-radius: 8px;
+        padding: 10px;
+        margin-bottom: 10px;
+        transition: transform 0.2s;
+    }
+    .product-card:hover { transform: scale(1.02); }
+    .product-card img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        margin-right: 15px;
+    }
+    .product-info { flex: 1; }
+    .product-name {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+    .product-price {
+        color: #ffcc00;
+        font-weight: bold;
+    }
+    .product-tag {
+        display: inline-block;
+        background: #444;
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        margin-right: 5px;
+    }
