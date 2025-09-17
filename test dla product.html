@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Page Layout</title>
+    <link rel="stylesheet" href="css/prdukt.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#">All Products</a></li>
+                <li><a href="#" class="active">Keyboards</a></li>
+                <li><a href="#">Slim-Keyboards</a></li>
+                <li><a href="#">Mice</a></li>
+                <li><a href="#">Accessories</a></li>
+                <li><a href="#">Deals</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+    // --- Product Option Selection ---
+    const optionGroups = document.querySelectorAll('.option-buttons');
+    optionGroups.forEach(group => {
+        group.addEventListener('click', function(event) {
+            if (event.target.tagName === 'BUTTON' && !event.target.classList.contains('disabled')) {
+                // Remove 'active' class from all buttons in the same group
+                const buttons = group.querySelectorAll('.option-btn');
+                buttons.forEach(btn => btn.classList.remove('active'));
+                
+                // Add 'active' class to the clicked button
+                event.target.classList.add('active');
+            }
+        });
+    });
+
+    // --- Quantity Selector ---
+    const decreaseBtn = document.getElementById('decrease');
+    const increaseBtn = document.getElementById('increase');
+    const quantityInput = document.getElementById('quantity');
+
+    decreaseBtn.addEventListener('click', () => {
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+        }
+    });
+
+    increaseBtn.addEventListener('click', () => {
+        let currentValue = parseInt(quantityInput.value);
+        quantityInput.value = currentValue + 1;
+    });
+
+    // --- Accordion ---
+    const accordionItems = document.querySelectorAll('.accordion-item');
+    accordionItems.forEach(item => {
+        const header = item.querySelector('.accordion-header');
+        header.addEventListener('click', () => {
+            const content = item.querySelector('.accordion-content');
+            
+            // Toggle active class on the item
+            item.classList.toggle('active');
+            
+            if (item.classList.contains('active')) {
+                content.style.maxHeight = content.scrollHeight + "px";
+            } else {
+                content.style.maxHeight = 0;
+            }
+        });
+    });
+
+    // --- Thumbnail Gallery ---
+    const mainImage = document.getElementById('main-product-image');
+    const thumbnails = document.querySelectorAll('.thumbnail');
+    
+    // Create placeholder URLs for main images corresponding to thumbnails
+    const mainImageUrls = [
+        'img/LW-4621 back.jpg',
+        'img/LW-4619 pen case BACK.jpg',
+        'img/LW-4620 pen case FRONT.jpg',
+        'img/LW-4736 front.jpg'
+    ];
+
+    thumbnails.forEach((thumbnail, index) => {
+        thumbnail.addEventListener('click', () => {
+            // Update the main image source
+            mainImage.src = mainImageUrls[index];
+
+            // Update active state for thumbnails
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            thumbnail.classList.add('active');
+        });
+    });
+
+});
+
+    </script>
+    
+
+    <main class="product-page">
+        <div class="product-gallery">
+            <div class="breadcrumb">
+                <span>Home > Keyboards > Product Name</span>
+            </div>
+            <div class="main-image">
+                <img src="img/LW-4621 back.jpg" alt="Main product view" id="main-product-image">
+            </div>
+            <div class="thumbnail-gallery">
+                <!-- Use actual product thumbnail images here -->
+                <img src="img/LW-4621 back.jpg" alt="Thumbnail 1" class="thumbnail active">
+                <img src="img/LW-4619 pen case BACK.jpg" alt="Thumbnail 2" class="thumbnail">
+                <img src="img/LW-4620 pen case FRONT.jpg" alt="Thumbnail 3" class="thumbnail">
+                <img src="img/LW-4736 front.jpg" alt="Thumbnail 4" class="thumbnail">
+            </div>
+        </div>
+
+        <div class="product-details">
+            <h1>Keychron K10 HE Wireless Magnetic Switch Custom Keyboard</h1>
+            <span class="sku">SKU: K10H-Q1</span>
+            <div class="price">$144.99</div>
+
+            <div class="options">
+                <div class="option-group">
+                    <label>Type</label>
+                    <div class="option-buttons">
+                        <button class="option-btn active">Special Edition</button>
+                        <button class="option-btn">Standard Version</button>
+                    </div>
+                </div>
+                <div class="option-group">
+                    <label>Color</label>
+                    <div class="option-buttons">
+                        <button class="option-btn disabled">Black</button>
+                        <button class="option-btn active">White</button>
+                    </div>
+                </div>
+                <div class="option-group">
+                    <label>Switches</label>
+                    <div class="option-buttons">
+                        <button class="option-btn active full-width">Gateron Double-Rail Magnetic Nebula Switch</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-item">
+                    <button class="accordion-header">Frequently Bought Together</button>
+                    <div class="accordion-content">
+                        <p>Content for items frequently bought together.</p>
+                    </div>
+                </div>
+                 <div class="accordion-item">
+                    <button class="accordion-header">Magnetic Switch</button>
+                    <div class="accordion-content">
+                        <p>Details about the magnetic switch.</p>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-header">Cables</button>
+                    <div class="accordion-content">
+                        <p>Details about available cables.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="purchase-actions">
+                <div class="quantity-selector">
+                    <button id="decrease">-</button>
+                    <input type="text" id="quantity" value="1" readonly>
+                    <button id="increase">+</button>
+                </div>
+                <button class="add-to-cart-btn">Add to cart</button>
+            </div>
+        </div>
+    </main>
+    
+    <div class="chat-widget">
+        Chat
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
