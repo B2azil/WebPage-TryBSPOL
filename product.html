@@ -3,12 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <title>Szczegóły produktu</title>
-  <!-- <link rel="stylesheet" href="css/reset.css">   -->
   <link rel="stylesheet" href="css/product.css">
   <link rel="stylesheet" href="https://unpkg.com/photoswipe@5/dist/photoswipe.css" />
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-  <script src="script.js"></script>
- 
+  <script src="script.js"></script> <!-- Accordion -->
 </head>
 <body>
   <div class="product-container" id="productDetails">
@@ -16,8 +14,6 @@
   </div>
   
   <script type="module">
-    import PhotoSwipeLightbox from 'https://unpkg.com/photoswipe@5/dist/photoswipe-lightbox.esm.js';
-
     async function loadProductDetails() {
       const params = new URLSearchParams(window.location.search);
       const prodId = params.get('id');
@@ -31,317 +27,143 @@
         const response = await fetch('produkty_legia.csv');
         const data = await response.text();
 
-      const results = Papa.parse(data, {
-        header: true,
-        skipEmptyLines: true,
-        dynamicTyping: false,
-        delimiter: ';'  // ustaw separator na średnik
-      });
-      const products = results.data;
+        const results = Papa.parse(data, {
+          header: true,
+          skipEmptyLines: true,
+          dynamicTyping: false,
+          delimiter: ';'  // ustaw separator na średnik
+        });
+        const products = results.data;
 
       // Odnajdź produkt po nazwie (prodId jest w URL zakodowane, więc dekoduj)
-      const decodedProdId = decodeURIComponent(prodId);
-      const product = products.find(p => p.name === decodedProdId);
+        const decodedProdId = decodeURIComponent(prodId);
+        const product = products.find(p => p.name === decodedProdId);
 
-      if (!product) {
-        document.getElementById('productDetails').innerHTML = '<p>Produkt nie znaleziony.</p>';
-        return;
-      }
-        
+        if (!product) {
+          document.getElementById('productDetails').innerHTML = '<p>Produkt nie znaleziony.</p>';
+          return;
+        }
+
       // Dynamiczne wyświetlanie dostępnych zdjęć
-      const images = [
-        product.image, product.image2, product.image3,
-        product.image4, product.image5, product.image6,
-        product.image7, product.image8
-      ].filter(src => src && src.trim() !== '');
-      
-      
-      // Wygeneruj galerię: duże zdjęcie + miniatury
-      const imagesHtml = images.map((src, index) => 
-        `<a href="${src}" 
-          data-pswp-width="xx" 
-          data-pswp-height="xx" 
-          target="_blank" 
-          class="pswp-gallery">
-          <img src="${src}" alt="${product.name} zdjęcie ${index + 1}" loading="lazy">
-        </a>`).join('');        
+        const images = [
+          product.image, product.image2, product.image3,
+          product.image4, product.image5, product.image6,
+          product.image7, product.image8
+        ].filter(src => src && src.trim() !== '');
 
-      // Dynamiczne wyświetlanie dostępnych informacji o produkcie
-      const infoFields = ['info1', 'info2', 'info3', 'info4',
-                          'info5', 'info6', 'info7', 'info8',
-                          'info9', 'info10', 'info11', 'info12',
-                          'info13', 'info14', 'info15', 'info16'
-                        ];
-      const infosHtml = infoFields
-        .map(field => product[field])
-        .filter(text => text && text.trim() !== '')
-        .map(text => `<p class="description">${text}</p>`)
-        .join('');  
-
-        
-      // Wyświetl szczegóły / Renderowanie informacji z pliku
-      document.getElementById('productDetails').innerHTML = `
-        
-      
-        <span class="top">
-          <a href="${product.brandPage || 'main.html'}" class="back-link">← Powrót do listy ${product.brand}</a>
-        </span>
-
-        <main class="product-page">
-
-          <div class="product-images">${imagesHtml}</div>
-
-
-          <section class="product-details">
-            <h1 class="h1">${product.name}</h1>
-            <span class="sku">SKU: ${product.sku}</span>
-            <div class="category">Kategoria: ${product.category}</div>
-            <div class="price">Cena: ${product.price} zł</div>
-
-            <div>
-              <div class="brand">Marka: ${product.brand}</div>
-              <h3> Produkt dostępny w naszym sklepie: </h3>
-              <a href="${product.link}" target="_blank" class="link"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro"></a>
-            </div>  
-
-            <div class="accordion">
-              <div class="accordion-item">
-                <button class="accordion-header">Opis produktu</button>
-                <div class="accordion-content">
-                    ${infosHtml}
+        // Galeria
+        const galleryHtml = `
+          <div class="gallery">
+            <div class="thumbnails">
+              ${images.map((src, i) => `
+                <div class="thumb-box">
+                  <img src="${src}" data-index="${i}" alt="${product.name} miniatura" loading="lazy">
                 </div>
-              </div>
-
-              <div class="accordion-item">
-                <button class="accordion-header">Specyfikacja techniczna produktu</button>
-                <div class="accordion-content">
-                    <p>Wysokość: ${product.height} cm</p>
-                    <p>Szerokość: ${product.width} cm</p>
-                    <p>Głębokość: ${product.depth} cm</p>
-                    <p>Waga produktu: ${product.weight} g</p>
-                    <p>Materiał: ${product.material}</p>
-                    <p>Kolor dominujący: ${product.color}</p>
-                </div>
+              `).join('')}
             </div>
-          </section>
-
-            
-
-
-
-        
-
-
-              <!-- Galeria LightGallery -->
-
-              <div class="d-flex justify-content-center">
-                <div id="inline-gallery-container" class="inline-gallery-container"></div>
+            <div class="main-image">
+              <div class="image-box">
+                <img id="currentImage" src="${images[0]}" alt="${product.name}">
               </div>
-        
-        </main> 
-    `;
+            </div>
+          </div>
+        `;
 
-    
-    // Miniatury
-    // document.querySelector('.product-images').innerHTML = imagesHtml;
-    // const lightbox = new PhotoSwipeLightbox({
-    //   gallery: '.product-images',
-    //   children: 'a',
-    //   pswpModule: () => import('https://unpkg.com/photoswipe@5/dist/photoswipe.esm.min.js')
-    // });
-    // lightbox.init();
+        // Opis
+        const infoFields = [
+          'info1','info2','info3','info4',
+          'info5','info6','info7','info8',
+          'info9','info10','info11','info12',
+          'info13','info14','info15'
+        ];
+        const infosHtml = infoFields
+          .map(field => product[field])
+          .filter(text => text && text.trim() !== '')
+          .map(text => `<p class="description">${text}</p>`)
+          .join('');
 
+        // Render
+        document.getElementById('productDetails').innerHTML = `
+          <div class="header">
+            <a href="${product.brandPage || 'main.html'}" class="back-link">← Powrót do listy ${product.brand}</a>
+          </div>
 
-    } catch (error) {
-      document.getElementById('productDetails').innerHTML = '<p>Błąd podczas ładowania danych produktu.</p>';
-      console.error('Błąd ładowania CSV:', error);
+          <main class="product-page">
+            ${galleryHtml}
+
+            <section class="product-details">
+              <h1 class="h1">${product.name}</h1>
+              <span class="sku">SKU: ${product.sku}</span>
+              <div class="category">Kategoria: ${product.category}</div>
+              <div class="price">Cena rekomendowana: ${product.price} zł</div>
+
+              <div>
+                <div class="brand">Marka: ${product.brand}</div>
+                <h3> Produkt dostępny w naszym sklepie: </h3>
+                <a href="${product.link}" target="_blank" class="link">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro">
+                </a>
+              </div>  
+
+              <div class="accordion">
+                <div class="accordion-item">
+                  <button class="accordion-header">Opis produktu</button>
+                  <div class="accordion-content">
+                      ${infosHtml}
+                  </div>
+                </div>
+
+                <div class="accordion-item">
+                  <button class="accordion-header">Specyfikacja techniczna produktu</button>
+                  <div class="accordion-content">
+                      <p>Wysokość: ${product.height} cm</p>
+                      <p>Szerokość: ${product.width} cm</p>
+                      <p>Głębokość: ${product.depth} cm</p>
+                      <p>Waga produktu: ${product.weight} g</p>
+                      <p>Materiał: ${product.material}</p>
+                      <p>Kolor dominujący: ${product.color}</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>
+        `;
+
+        // --- JS obsługa galerii ---
+        const thumbs = document.querySelectorAll('.thumb-box img');
+        const thumbBoxes = document.querySelectorAll('.thumb-box');
+        const currentImg = document.getElementById('currentImage');
+
+        thumbs.forEach((thumb, i) => {
+          thumb.addEventListener('mouseenter', () => {
+            currentImg.src = thumb.src;
+            thumbBoxes.forEach(b => b.classList.remove('active'));
+            thumbBoxes[i].classList.add('active');
+          });
+        });
+        thumbBoxes[0]?.classList.add('active');
+
+        // Zoom efekt (lupa)
+        const imageBox = document.querySelector('.main-image .image-box');
+        imageBox.addEventListener('mousemove', (e) => {
+          const rect = imageBox.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          currentImg.style.transformOrigin = `${x}% ${y}%`;
+          currentImg.style.transform = "scale(2)";
+        });
+        imageBox.addEventListener('mouseleave', () => {
+          currentImg.style.transform = "scale(1)";
+          currentImg.style.transformOrigin = "center center";
+        });
+
+      } catch (error) {
+        document.getElementById('productDetails').innerHTML = '<p>Błąd podczas ładowania danych produktu.</p>';
+        console.error('Błąd ładowania CSV:', error);
+      }
     }
-  }
 
     loadProductDetails();
-    import lightGallery from "https://cdn.skypack.dev/lightgallery@2.4.0";
-
-import lgZoom from "https://cdn.skypack.dev/lightgallery@2.4.0/plugins/zoom";
-import lgThumbnail from "https://cdn.skypack.dev/lightgallery@2.4.0/plugins/thumbnail";
-
-const $lgContainer = document.getElementById("inline-gallery-container");
-
-const inlineGallery = lightGallery($lgContainer, {
-  container: $lgContainer,
-  dynamic: true,
-  // Turn off hash plugin in case if you are using it
-  // as we don't want to change the url on slide change
-  hash: false,
-  // Do not allow users to close the gallery
-  closable: false,
-  // Add maximize icon to enlarge the gallery
-  showMaximizeIcon: true,
-  // Append caption inside the slide item
-  // to apply some animation for the captions (Optional)
-  appendSubHtmlTo: ".lg-item",
-  // Delay slide transition to complete captions animations
-  // before navigating to different slides (Optional)
-  // You can find caption animation demo on the captions demo page
-  slideDelay: 400,
-  plugins: [lgZoom, lgThumbnail],
-  dynamicEl: [
-    {
-      src:
-        "https://images.unsplash.com/photo-1542103749-8ef59b94f47e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1542103749-8ef59b94f47e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1542103749-8ef59b94f47e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1542103749-8ef59b94f47e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@dann">Dan</a></h4>
-                    <p>Published on November 13, 2018</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1473876988266-ca0860a443b8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1473876988266-ca0860a443b8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1473876988266-ca0860a443b8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1473876988266-ca0860a443b8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@kylepyt">Kyle Peyton</a></h4>
-                    <p>Published on September 14, 2016</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1588953936179-d2a4734c5490?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1588953936179-d2a4734c5490?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1588953936179-d2a4734c5490?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1588953936179-d2a4734c5490?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@jxnsartstudio">Garrett Jackson</a></h4>
-                    <p>Published on May 8, 2020</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1591634616938-1dfa7ee2e617?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1591634616938-1dfa7ee2e617?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1591634616938-1dfa7ee2e617?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1591634616938-1dfa7ee2e617?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@brookecagle">Brooke Cagle</a></h4>
-                    <p>Description of the slide 4</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1543059509-6d53dbee1728?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1543059509-6d53dbee1728?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1543059509-6d53dbee1728?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1543059509-6d53dbee1728?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@charlespostiaux">Charles Postiaux</a></h4>
-                    <p>Published on November 24, 2018</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1609902726285-00668009f004?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1609902726285-00668009f004?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1609902726285-00668009f004?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1609902726285-00668009f004?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@bruno_adam">Bruno Adam</a></h4>
-                    <p>Published on January 6, 2021</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1573007974656-b958089e9f7b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1573007974656-b958089e9f7b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1573007974656-b958089e9f7b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1573007974656-b958089e9f7b?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@sigmund">Sigmund</a></h4>
-                    <p>Published on November 6, 2019</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1579406842270-ea87c39a8a12?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1579406842270-ea87c39a8a12?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1579406842270-ea87c39a8a12?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1579406842270-ea87c39a8a12?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@chow_parij">Parij Borgohain</a></h4>
-                    <p>Published on January 19, 2020</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1598911543663-37d77962beb1?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1598911543663-37d77962beb1?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1598911543663-37d77962beb1?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1598911543663-37d77962beb1?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@inespiazzese">Ines Piazzese</a></h4>
-                    <p>Published on September 1, 2020</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1560885673-2cdc12600ec8?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1560885673-2cdc12600ec8?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1560885673-2cdc12600ec8?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1560885673-2cdc12600ec8?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@rdsaunders">Richard Saunders</a></h4>
-                    <p>Published on June 19, 2019</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1571292064306-669f0e758231?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1571292064306-669f0e758231?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1571292064306-669f0e758231?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1571292064306-669f0e758231?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@jalanmeier">J. Meier</a></h4>
-                    <p>Published on October 17, 2019</p>
-                </div>`
-    },
-    {
-      src:
-        "https://images.unsplash.com/photo-1601935111741-ae98b2b230b0?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1400&q=80",
-      responsive:
-        "https://images.unsplash.com/photo-1601935111741-ae98b2b230b0?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=480&q=80 480, https://images.unsplash.com/photo-1601935111741-ae98b2b230b0?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=800&q=80 800",
-      thumb:
-        "https://images.unsplash.com/photo-1601935111741-ae98b2b230b0?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=240&q=80",
-      subHtml: `<div class="lightGallery-captions">
-                    <h4>Photo by <a href="https://unsplash.com/@brookecagle">Brooke Cagle</a></h4>
-                    <p>Published on October 6, 2020</p>
-                </div>`
-    }
-  ],
-
-  // Completely optional
-  // Adding as the codepen preview is usually smaller
-  thumbWidth: 60,
-  thumbHeight: "40px",
-  thumbMargin: 4
-});
-
-setTimeout(() => {
-  inlineGallery.openGallery();
-}, 200);
-
   </script>
 </body>
 </html>
