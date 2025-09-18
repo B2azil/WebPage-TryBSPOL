@@ -1,8 +1,9 @@
 body { 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: #f2f2f2; 
-    margin: 30px; /* dodanie marginesu dla lepszego wyglądu */ 
-    color: #333; }
+  margin: 30px; 
+  color: #333; 
+}
 
 .product-container { 
     max-width: 900px; 
@@ -42,19 +43,11 @@ a.back-link {
     margin-top: 25px; 
     text-decoration: none; 
     color: #2980b9; 
-    font-weight: bold; }
-    
-a.back-link:hover { 
-    text-decoration: underline; }
+  font-weight: bold; 
+}
+a.back-link:hover { text-decoration: underline; }
 
-
-
-
-
-
-
-/* Nowa chwilowa wersja dla produktu */
-
+/* Layout */
 .product-page {
     display: flex;
     max-width: 1200px;
@@ -66,36 +59,23 @@ a.back-link:hover {
 .product-details {
     flex: 1;
 }
-
-/* Right Column: Product Details */
 .product-details .h1 {
     font-size: 1.8rem;
     margin: 0;
     font-weight: 600;
 }
-
 .sku {
     font-size: 0.8rem;
     color: #999;
     display: block;
     margin-top: 0.5rem;
 }
-
 .price {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0.8rem 0rem 0rem 0rem;
-
-
     font-size: 1.3em; 
     font-weight: bold; 
     color: #e67e22; 
-    /* margin-bottom: 1.5rem; */
+  margin: 1rem 0;
 }
-
-
-
-
 /* Accordion Styles */
 .accordion {
     border-top: 1px solid #eee;
@@ -130,131 +110,3 @@ a.back-link:hover {
     transition: max-height 0.3s ease-out;
     padding: 0 1rem;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Grid Layout */
-/* 
-.parent {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(8, 1fr);
-    gap: 8px;
-}
-
-.product-images {
-    grid-column: 1 / span 2;
-    grid-row: 2 / span 5;
-}
-.product-basic {
-    grid-column: 3 / span 2;
-    grid-row: 2 / span 2;
-}
-.product-data {
-    grid-column: 3 / span 2;
-    grid-row: 4 / span 3;
-}
-.product-description {
-    grid-column: 1 / span 3;
-    grid-row: 7 / span 2;
-}
-.link {
-    grid-column: 4;
-    grid-row: 7 / span 2;
-}
-.top {
-    grid-column: 1 / span 4;
-    grid-row: 1;
-}
-
-
-.inline-gallery-container {
-  width: 700px;
-  height: 500px;
-  position: relative;
-} */
-
-
-/* For caption animation(Optional) */
-
-
-/* .lightGallery-captions {
-    h4 {
-        transform: translate3d(60px, 0, 0px);
-    }
-    p {
-        transform: translate3d(-60px, 0, 0px);
-    }
-    h4,
-    p {
-        opacity: 0;
-    }
-}
-.lg-current {
-    .lightGallery-captions {
-        h4,
-        p {
-            transform: translate3d(0, 0, 0px);
-        }
-        h4,
-        p {
-            opacity: 1;
-        }
-    }
-}
-.lg-slide-progress {
-    .lightGallery-captions {
-        h4 {
-            transform: translate3d(-60px, 0, 0px);
-        }
-        p {
-            transform: translate3d(60px, 0, 0px);
-        }
-        h4,
-        p {
-            opacity: 0;
-        }
-    }
-}
-
-.lightGallery-captions {
-    h4,
-    p {
-        transition: transform 0.4s ease-in-out, opacity 0.4s ease-in;
-    }
-}
-.lg-current {
-    .lightGallery-captions {
-        h4,
-        p {
-            transition-delay: 500ms;
-        }
-    }
-    &.lg-slide-progress {
-        .lightGallery-captions {
-            h4,
-            p {
-                transition-delay: 0ms;
-            }
-        }
-    }
-} */
