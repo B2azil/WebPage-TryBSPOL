@@ -141,6 +141,12 @@ a.back-link:hover { text-decoration: underline; }
     padding: 0 1rem;
 }
 
+.accordion-content p {
+  margin: 0.4rem 0;   /* górny i dolny margines 4px zamiast np. 16px */
+  line-height: 1.4; /* opcjonalnie ciaśniejszy odstęp między liniami */
+}
+
+
 .header {
   margin-bottom: 1rem;
   /* padding-bottom: 1rem; */

@@ -1,125 +1,132 @@
-* { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { font-family: Arial, sans-serif; line-height: 1.6; }
+* { margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+  scroll-behavior: smooth; 
+}
 
-        header {
-            background: #333;
-            color: #fff;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        header nav a {
-            color: #fff;
-            margin-left: 15px;
-            text-decoration: none;
-        }
-        header nav a:hover { text-decoration: underline; }
+body { 
+  font-family: Arial, sans-serif; 
+  line-height: 1.6; }
 
-        
+header {
+    background: #333;
+    color: #fff;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+header nav a {
+    color: #fff;
+    margin-left: 15px;
+    text-decoration: none;
+}
+header nav a:hover { 
+  text-decoration: underline; 
+}
 
-        section {
-            padding: 2rem 10%;
-        }
+section {
+    padding: 2rem 10%;
+}
 
-        .about, .portfolio, .buy {
-            background: #f9f9f9;
-            margin-bottom: 1rem;
-        }
+.about, .portfolio, .buy {
+    background: #f9f9f9;
+    margin-bottom: 1rem;
+}
 
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-        }
-        .portfolio-grid img {
-            max-width: 100%;
-            background: white;
-            padding: 10px;
-            border-radius: 8px;
-        }
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+.portfolio-grid img {
+    max-width: 100%;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+}
 
-        .buy-links{
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.2rem;
-        }
-        .buy-links a img {
-            max-width: 120px;
-            transition: transform 0.2s;
-        }
-        .buy-links a:hover img { transform: scale(1.1); }
+.buy-links{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+}
+.buy-links a img {
+    max-width: 120px;
+    transition: transform 0.2s;
+}
+.buy-links a:hover img { transform: scale(1.1); }
 
-        footer {
-            background: #333;
-            color: white;
-            padding: 1rem 10%;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        footer .contact, footer .address {
-            margin-bottom: 10px;
-        }
-        .logo{
-            width: 100px;
-        }
+footer {
+    background: #333;
+    color: white;
+    padding: 1rem 10%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+footer .contact, footer .address {
+    margin-bottom: 10px;
+}
+.logo{
+    width: 100px;
+}
 
 .container {
-  display: flex;
-  justify-content: center;  /* wyśrodkowanie poziome */
-  align-items: center;      /* wyśrodkowanie pionowe */
+display: flex;
+justify-content: center;  /* wyśrodkowanie poziome */
+align-items: center;      /* wyśrodkowanie pionowe */
 }
 
 #cont {
-    padding: 2vh 0;
-    background-color: black;
+padding: 2vh 0;
+background-color: black;
 }
 
 .hero {
-    flex-direction: column;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
-    } 
+flex-direction: column;
+text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+} 
 
 .hero h1 { font-size: 3rem; margin-bottom: 10px; }
 .hero p { font-size: 1.3rem; } 
 
 /* New Hero Section Styles */
-        .hero {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://img.freepik.com/fotos-premium/collage-productos-maquillaje-que-incluye-paleta-maquillaje-paleta-rosa-naranja_905683-4728.jpg?w=2000'); /* Replace with your image URL or path (e.g., a product collage or company logo background) */
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            height: 70vh; /* Adjust height as needed; 50% of viewport height */
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-        }
-        .hero-text {
-            max-width: 80%;
-        }
-        .hero-text h1 {
-            font-size: 2.5em;
-            margin-bottom: 0.5em;
-        }
-        .hero-cta {
-            background-color: #00c01d;
-            color: white;
-            padding: .7em 1.2em;
-            margin-top: 0.5em;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
+.hero {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://img.freepik.com/fotos-premium/collage-productos-maquillaje-que-incluye-paleta-maquillaje-paleta-rosa-naranja_905683-4728.jpg?w=2000'); /* Replace with your image URL or path (e.g., a product collage or company logo background) */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 70vh; /* Adjust height as needed; 50% of viewport height */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+}
+.hero-text {
+    max-width: 80%;
+}
+.hero-text h1 {
+    font-size: 2.5em;
+    margin-bottom: 0.5em;
+}
+.hero-cta {
+    background-color: #00c01d;
+    color: white;
+    padding: .7em 1.2em;
+    margin-top: 0.5em;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
 .hero-cta:hover {
-            background-color: #00911C;
-        }
+    background-color: #00911C;
+}
 
 
 
