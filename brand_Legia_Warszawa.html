@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marka XYZ - Produkty</title>
-    <!-- <link rel="stylesheet" href="css/reset.css"> -->
-    <link rel="stylesheet" href="css/brand.css">
+    <link rel="stylesheet" href="css/TestBrand.css">
 </head>
 <body>
 
@@ -22,26 +21,9 @@
     <!-- Kategorie z CSV -->
 </div>
 
-<div class="product-list" id="productList">
+<div class="product-grid" id="productList">
     <!-- Produkty z CSV -->
 </div>
-
-<div id="categoryBar"></div>
-<div id="productList"></div>
-
-<!-- modal na szczegóły produktu -->
-
-
-<!-- <div id="detailsModal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,.55); align-items:center; justify-content:center;">
-  <div style="background:#fff; color:#222; padding:30px; border-radius:15px; max-width:400px; text-align:left; position:relative;">
-    <button id="closeModal" style="position:absolute;right:10px;top:7px;font-size:20px;">×</button>
-    <h2 id="modalName"></h2>
-    <img id="modalImg" src="" style="max-width:200px; border-radius:12px;" alt="">
-    <p id="modalInfo"></p>
-    <p id="modalPrice" style="font-weight:bold"></p>
-    <div id="modalCat" style="color:#4B85FF"></div>
-  </div>
-</div> -->
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
@@ -56,7 +38,7 @@ async function loadProducts() {
           header: true,
           skipEmptyLines: true,
           dynamicTyping: false,
-          delimiter: ';'  // ustaw separator na średnik
+          delimiter: ';'
         });
         products = results.data;
 
@@ -111,24 +93,23 @@ function render() {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-                <img src="${p.image}" alt="${p.name}">
+                <img src="${p.image}" alt="${p.name}" class="product-image">
                 <div class="product-info">
                     <div class="product-name">${p.name}</div>
-                    <div>
-                        <span class="product-tag">${p.category}</span>
+                    <div class="product-category">${p.category}</div>
+                    <div class="product-price">cena sugerowana: ${p.price} PLN</div>
+                    <div class="product-dimensions">
+                        <span>${p.height}</span>
+                        <span>${p.width}</span>
+                        <span>${p.depth} cm</span>    
                     </div>
-                    <div class="product-price">rekomendowana cena: ${p.price} zł</div>
-                </div>
-                <div class="dimensions">
-                    <span>${p.height} cm</span>
-                    <span>${p.width} cm</span>
-                    <span>${p.depth} cm</span>    
                 </div>
             `;
-            // Kliknięcie przekierowuje do podstrony produktu
+            
             card.addEventListener('click', function() {
                 window.location.href = 'product.html?id=' + encodeURIComponent(p.name);
             });
+            
             productList.appendChild(card);
         });
 }
@@ -136,8 +117,6 @@ function render() {
 document.getElementById('search').addEventListener('input', render);
 
 loadProducts();
-
-
 </script>
 
 </body>
