@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Szczegóły produktu</title>
   <link rel="stylesheet" href="css/product.css">
   <link rel="stylesheet" href="https://unpkg.com/photoswipe@5/dist/photoswipe.css" />
@@ -24,7 +26,7 @@
       }
 
       try {
-        const response = await fetch('produkty_legia.csv');
+        const response = await fetch('brand_LegiaWarszawa.csv');
         const data = await response.text();
 
         const results = Papa.parse(data, {
@@ -35,7 +37,7 @@
         });
         const products = results.data;
 
-      // Odnajdź produkt po nazwie (prodId jest w URL zakodowane, więc dekoduj)
+        // Odnajdź produkt po nazwie (prodId jest w URL zakodowane, więc dekoduj)
         const decodedProdId = decodeURIComponent(prodId);
         const product = products.find(p => p.name === decodedProdId);
 
@@ -44,7 +46,7 @@
           return;
         }
 
-      // Dynamiczne wyświetlanie dostępnych zdjęć
+        // Dynamiczne wyświetlanie dostępnych zdjęć
         const images = [
           product.image, product.image2, product.image3,
           product.image4, product.image5, product.image6,
@@ -85,7 +87,7 @@
         // Render
         document.getElementById('productDetails').innerHTML = `
           <div class="header">
-            <a href="${product.brandPage || 'main.html'}" class="back-link">← Powrót do listy ${product.brand}</a>
+            <a href="brand.html?brand=${product.brandPage || 'main.html'}" class="back-link">← Powrót do listy ${product.brand}</a>
           </div>
 
           <main class="product-page">
@@ -122,6 +124,7 @@
                       <p>Waga produktu: ${product.weight} g</p>
                       <p>Materiał: ${product.material}</p>
                       <p>Kolor dominujący: ${product.color}</p>
+                      <p>Kod kreskowy produktu: ${product.BarCode}</p>
                   </div>
                 </div>
               </div>
@@ -157,7 +160,8 @@
           currentImg.style.transformOrigin = "center center";
         });
 
-      } catch (error) {
+      } 
+      catch (error) {
         document.getElementById('productDetails').innerHTML = '<p>Błąd podczas ładowania danych produktu.</p>';
         console.error('Błąd ładowania CSV:', error);
       }
@@ -165,5 +169,7 @@
 
     loadProductDetails();
   </script>
+
+  
 </body>
 </html>
