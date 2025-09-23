@@ -4,136 +4,175 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>B&S Polska V2</title>
+    <title>B&S Polska</title>
     <link rel="icon" href="img/bspolska.png">
     <meta name="description" content="">
     <!-- <link rel="stylesheet" href="css/reset.css"> -->
     <link rel="stylesheet" href="css/main.css">
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.0.0/papaparse.min.js"></script>
 </head>
 <body>
     
-    <header>
-        <div class="logo"><img src="img\bspolska.png" class="logo"></div>
-        <nav>
-            <a href="#about">O nas</a>
-            <a href="#portfolio">Portfolio</a>
-            <a href="#buy">Gdzie kupić</a>
-            <a href="#contact">Kontakt</a>
-        </nav>
-    </header>
-      
+  <header>
+      <div class="logo"><img src="img\bspolska.png" class="logo"></div>
+      <nav>
+          <a href="#about">O nas</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#buy">Gdzie kupić</a>
+          <a href="#contact">Kontakt</a>
+      </nav>
+  </header>
+    
+  <div class="hero">
+      <h1>B&S Polska</h1>
+      <p>daj jakieś hasło reklamowe kiedyś</p>
+      <a href="#portfolio" class="hero-cta">Przeglądaj marki</a>
+  </div>
 
-    <div class="hero">
-        <h1>B&S Polska</h1>
-        <p>daj jakieś hasło reklamowe kiedyś</p>
-        <a href="#portfolio" class="hero-cta">Przeglądaj marki</a>
+  <section id="about" class="about">
+      <h2>O nas</h2>
+      <p>Sklep oferuje dobrej jakości i w umiarkowanych cenach tekstylia szkolne. Jest wieloletnim, doświadczonym i rzetelnym dostawcą marek licencyjnych jak i własnych.</p>
+  </section>
+
+
+  <section id="brands">
+    <h2>Nasze Marki w Portfolio</h2>
+    <div class="brand-grid">
+      <a class="brand-tile" href="south.html">South</a>
+      <a class="brand-tile" href="tech.html">Tech</a>
+      <a class="brand-tile" href="pogonszczecin.html">Pogoń Szczecin</a>
+      <a href="brand_Legia_Warszawa.html" class="brand-tile" href="Legia.html">Legia Warszawa</a>
+      <a class="brand-tile" href="lechpoznan.html">Lech Poznań</a>
     </div>
+  </section>
 
-    <section id="about" class="about">
-        <h2>O nas</h2>
-        <p>Sklep oferuje dobrej jakości i w umiarkowanych cenach tekstylia szkolne. Jest wieloletnim, doświadczonym i rzetelnym dostawcą marek licencyjnych jak i własnych.</p>
-    </section>
-
-
-    <section id="brands">
-      <h2>Nasze Marki w Portfolio</h2>
-      <div class="brand-grid">
-        <a class="brand-tile" href="south.html">South</a>
-        <a class="brand-tile" href="tech.html">Tech</a>
-        <a class="brand-tile" href="pogonszczecin.html">Pogoń Szczecin</a>
-        <a href="brand_Legia_Warszawa.html" class="brand-tile" href="Legia.html">Legia Warszawa</a>
-        <a class="brand-tile" href="lechpoznan.html">Lech Poznań</a>
-      </div>
-    </section>
-
-
-
-
-
-
-    <section id="carousel">
-      <div class="logo-carousel">
-  <div class="logo-track" id="logoTrack"></div>
-</div>
-
-<style>
-.logo-carousel {
-  overflow: hidden;
-  width: 100%;
-  background: #fff;
-  padding: 16px 0;
-  position: relative;
-}
-.logo-track {
-  display: flex;
-  align-items: center;
-  width: max-content;
-  will-change: transform;
-}
-.logo-track img {
-  height: 64px;
-  width: auto;
-  margin-right: 40px;
-  filter: grayscale(100%) opacity(0.85);
-  transition: filter .2s, transform .2s;
-}
-.logo-track img:hover {
-  filter: grayscale(0%) opacity(1);
-  transform: scale(1.25);
-}
-</style>
 
 <script>
-const LOGOS = [
-  "https://upload.wikimedia.org/wikipedia/en/6/6d/Legia_Warsaw_logo.svg",
-  "img/1SO logo.jpg",
-  "https://football-logos.cc/logos/poland/700x700/lech-poznan.png",
-  "img/TE logo.jpg",
-  "https://upload.wikimedia.org/wikipedia/de/8/81/Pogon_Szczecin.svg",
-];
+document.addEventListener('DOMContentLoaded', function() {
+  const gridContainer = document.querySelector('.brand-grid');
+  Papa.parse('brands.csv', {
+    download: true,
+    header: true,
+    complete: function(results) {
+      gridContainer.innerHTML = '';
+      results.data.forEach(row => {
+        if (!row.name) return;
+        const tile = document.createElement('a');
+        tile.className = 'brand-tile';
+        // Zamiast: tile.href = row.url;
+        const slug = (row.name || '').normalize('NFKD').replace(/[^\w]+/g,'').trim();
+        tile.href = `brand.html?brand=${encodeURIComponent(slug)}`;
+        tile.style.backgroundColor = row.bgcolor || '#f2f2f2';
+        // Logo marki
+        if (row.image) {
+          const img = document.createElement('img');
+          img.src = row.image;
+          img.alt = row.name;
+          img.style.maxWidth = '42px';
+          img.style.marginRight = '8px';
+          tile.appendChild(img);
+        }
+        // Nazwa
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = row.name;
+        tile.appendChild(nameSpan);
+        // Opis, jeśli jest
+        if (row.description) {
+          const descDiv = document.createElement('div');
+          descDiv.className = 'brand-desc';
+          descDiv.textContent = row.description;
+          tile.appendChild(descDiv);
+        }
+        gridContainer.appendChild(tile);
+      });
+    }
+  });
+});
 
-// Duplikujemy logo aby płynnie zapętlić przesuwanie
-const carousel = document.getElementById('logoTrack');
-const wrapper = carousel.parentNode;
-
-function fillLogos() {
-  const baseLogos = [...LOGOS];
-  carousel.innerHTML = '';
-  let repetitions = 2;
-  do {
-    baseLogos.forEach(src => {
-      const img = document.createElement('img');
-      img.src = src;
-      carousel.appendChild(img);
-    });
-    repetitions++;
-  } while (carousel.scrollWidth < wrapper.offsetWidth * 2); // powielamy aż "tor" jest dużo dłuższy od widoku
-}
-fillLogos();
-
-// Płynne przesuwanie
-let position = 0;
-const speed = 1.2; // px na klatkę (zmień w razie potrzeby)
-let speedLocked = false;
-
-function animate() {
-  if (!speedLocked) position -= speed;
-  const logoWidth = carousel.scrollWidth / 2;
-  if (Math.abs(position) >= logoWidth) position = 0;
-  carousel.style.transform = `translateX(${position}px)`;
-  requestAnimationFrame(animate);
-}
-
-// Obsługa zatrzymania na hover
-carousel.parentNode.addEventListener('mouseenter', () => speedLocked = true);
-carousel.parentNode.addEventListener('mouseleave', () => speedLocked = false);
-
-animate();
 </script>
 
 
-    </section>
+  <section id="carousel">
+      <div class="logo-carousel">
+        <div class="logo-track" id="logoTrack"></div>
+      </div>
+
+    <style>
+    .logo-carousel {
+      overflow: hidden;
+      width: 100%;
+      background: #fff;
+      padding: 16px 0;
+      position: relative;
+    }
+    .logo-track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      will-change: transform;
+    }
+    .logo-track img {
+      height: 64px;
+      width: auto;
+      margin-right: 40px;
+      filter: grayscale(100%) opacity(0.85);
+      transition: filter .2s, transform .2s;
+    }
+    .logo-track img:hover {
+      filter: grayscale(0%) opacity(1);
+      transform: scale(1.25);
+    }
+    </style>
+
+    <script>
+      const LOGOS = [
+        "https://upload.wikimedia.org/wikipedia/en/6/6d/Legia_Warsaw_logo.svg",
+        "img/1SO logo.jpg",
+        "https://football-logos.cc/logos/poland/700x700/lech-poznan.png",
+        "img/TE logo.jpg",
+        "https://upload.wikimedia.org/wikipedia/de/8/81/Pogon_Szczecin.svg",
+      ];
+
+      // Duplikujemy logo aby płynnie zapętlić przesuwanie
+      const carousel = document.getElementById('logoTrack');
+      const wrapper = carousel.parentNode;
+
+      function fillLogos() {
+        const baseLogos = [...LOGOS];
+        carousel.innerHTML = '';
+        let repetitions = 2;
+        do {
+          baseLogos.forEach(src => {
+            const img = document.createElement('img');
+            img.src = src;
+            carousel.appendChild(img);
+          });
+          repetitions++;
+        } while (carousel.scrollWidth < wrapper.offsetWidth * 2); // powielamy aż "tor" jest dużo dłuższy od widoku
+      }
+      fillLogos();
+
+      // Płynne przesuwanie
+      let position = 0;
+      const speed = 1.2; // px na klatkę (zmień w razie potrzeby)
+      let speedLocked = false;
+
+      function animate() {
+        if (!speedLocked) position -= speed;
+        const logoWidth = carousel.scrollWidth / 2;
+        if (Math.abs(position) >= logoWidth) position = 0;
+        carousel.style.transform = `translateX(${position}px)`;
+        requestAnimationFrame(animate);
+      }
+
+      // Obsługa zatrzymania na hover
+      carousel.parentNode.addEventListener('mouseenter', () => speedLocked = true);
+      carousel.parentNode.addEventListener('mouseleave', () => speedLocked = false);
+
+      animate();
+    </script>
+  </section>
 
 
 
@@ -161,17 +200,9 @@ animate();
             <span class="container" id="cont" target="_blank"><a href="https://www.olx.pl/oferty/uzytkownik/1PcRlD/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/OLX_2019.svg" alt="OLX"></a></span>
             <span class="container"><a href="https://www.amazon.pl/s?me=A10IUM9O23CD0Y&marketplaceID=A1C3SOZRARQ6R3" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon"></a></span>
             <span class="container"><a href="https://arena.pl/sprzedawca/b_and_s_polska/sklep" target="_blank"><img src="https://arena.pl/dist/img/logo-arena.svg" alt="arena"></a></span>
-            <!-- <span class="container"><a href="#" target="_blank"><img src="https://sklep.legia.com/wp-content/uploads/2022/03/herbfanstore_mobile-1logoleg.svg" alt="Legia"></a></span> -->
         </div>
     </section>
 
-    <!-- <section id="partner" class="buy">
-        <h2>Nasi główni partnerzy handlowi</h2>
-        <div class="buy-links">
-            <span class="container"><a href="#" target="_blank"><img src="https://sklep.legia.com/wp-content/uploads/2022/03/herbfanstore_mobile-1logoleg.svg" alt="arena"></a></span>
-            <span class="container"><a href="#" target="_blank"><img src="https://sklep.lechpoznan.pl/static/version1756194740/frontend/Creativestyle/theme-lechpoznan/pl_PL/images/logo/lech-sklep-logo.svg" alt="arena"></a></span>
-        </div>
-    </section> -->
     <footer id="contact">
         <div class="contact">
             <h4>Kontakt</h4>
@@ -183,55 +214,5 @@ animate();
             <p>Ul. Batorego 3, 05-083 Topolin</p>
         </div>
     </footer>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-<!-- Skrypt do ładowania i parsowania pliku CSV -->
-<script>
-  function loadCSVFromUrl(url) {
-    fetch(url)
-      .then(response => {
-        if(!response.ok) throw new Error("Błąd pobierania pliku CSV");
-        return response.text();
-      })
-      .then(csvText => {
-        Papa.parse(csvText, {
-          header: true,
-          complete: function(results) {
-            const data = results.data;
-            // Przykładowa aktualizacja zawartości na podstawie CSV
-            const aboutSection = document.querySelector('.about p');
-            if (data[0]?.aboutText) {
-              aboutSection.textContent = data[0].aboutText;
-            }
-
-            const portfolioGrid = document.querySelector('.portfolio-grid');
-            if (portfolioGrid) {
-              portfolioGrid.innerHTML = ''; // czyścimy aktualne
-              data.forEach(item => {
-                if(item.portfolioName && item.portfolioLink && item.portfolioImg) {
-                  const a = document.createElement('a');
-                  a.href = item.portfolioLink;
-                  const img = document.createElement('img');
-                  img.src = item.portfolioImg;
-                  img.alt = item.portfolioName;
-                  a.appendChild(img);
-                  portfolioGrid.appendChild(a);
-                }
-              });
-            }
-            // Dodaj inne elementy aktualizacji, jeśli potrzeba
-          },
-          error: function(err) {
-            console.error('Błąd parsowania CSV: ' + err.message);
-          }
-        });
-      })
-      .catch(err => console.error('Błąd pobierania CSV: ' + err.message));
-  }
-
-  // Przykładowe wywołanie: podaj URL do pliku CSV w Twoim projekcie lub na serwerze
-  loadCSVFromUrl('main.csv');
-</script>
-
 </body>
 </html>
