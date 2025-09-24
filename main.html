@@ -37,61 +37,103 @@
 
 
   <section id="brands">
-    <h2>Nasze Marki w Portfolio</h2>
-    <div class="brand-grid">
-      <a class="brand-tile" href="south.html">South</a>
-      <a class="brand-tile" href="tech.html">Tech</a>
-      <a class="brand-tile" href="pogonszczecin.html">Pogoń Szczecin</a>
-      <a href="brand_Legia_Warszawa.html" class="brand-tile" href="Legia.html">Legia Warszawa</a>
-      <a class="brand-tile" href="lechpoznan.html">Lech Poznań</a>
-    </div>
-  </section>
-
-
+  <h2>Nasze Portfolio</h2>
+  <div class="brand-grid">
+    <p class="loading">Ładowanie marek...</p>
+  </div>
+</section>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const gridContainer = document.querySelector('.brand-grid');
-  Papa.parse('brands.csv', {
-    download: true,
-    header: true,
-    complete: function(results) {
-      gridContainer.innerHTML = '';
-      results.data.forEach(row => {
-        if (!row.name) return;
-        const tile = document.createElement('a');
-        tile.className = 'brand-tile';
-        // Zamiast: tile.href = row.url;
-        const slug = (row.name || '').normalize('NFKD').replace(/[^\w]+/g,'').trim();
-        tile.href = `brand.html?brand=${encodeURIComponent(slug)}`;
-        tile.style.backgroundColor = row.bgcolor || '#f2f2f2';
-        // Logo marki
-        if (row.image) {
-          const img = document.createElement('img');
-          img.src = row.image;
-          img.alt = row.name;
-          img.style.maxWidth = '42px';
-          img.style.marginRight = '8px';
-          tile.appendChild(img);
-        }
-        // Nazwa
-        const nameSpan = document.createElement('span');
-        nameSpan.textContent = row.name;
-        tile.appendChild(nameSpan);
-        // Opis, jeśli jest
-        if (row.description) {
-          const descDiv = document.createElement('div');
-          descDiv.className = 'brand-desc';
-          descDiv.textContent = row.description;
-          tile.appendChild(descDiv);
-        }
-        gridContainer.appendChild(tile);
-      });
+  document.addEventListener('DOMContentLoaded', function() {
+    const gridContainer = document.querySelector('.brand-grid');
+
+    // Funkcja slugify (bezpieczne URL)
+    function slugify(text) {
+        const map = {
+        'ą':'a','ć':'c','ę':'e','ł':'l','ń':'n',
+        'ó':'o','ś':'s','ź':'z','ż':'z',
+        'Ą':'a','Ć':'c','Ę':'e','Ł':'l','Ń':'n',
+        'Ó':'o','Ś':'s','Ź':'z','Ż':'z'
+        };
+      return String(text || '')
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // pozostałe akcenty
+        .replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/g, m => map[m] || m) // zamiana PL znaków
+        .toLowerCase()
+        .replace(/\s+/g, '-')            // spacje → -
+        .replace(/[^\w-]+/g, '')         // inne znaki
+        .replace(/--+/g, '-')            // wielokrotne - do jednego
+        .replace(/^-+|-+$/g, '');        // usunięcie - z początku/końca
     }
+
+    // Walidacja kolorów
+    function isValidColor(str) {
+      const s = new Option().style;
+      s.color = str;
+      return s.color !== '';
+    }
+
+    // Nowa funkcja do tworzenia kafelka (przeniesiona z Twojego kodu dla lepszej organizacji)
+    function createBrandTile(row) {
+      if (!row.name) return null; // pomijamy wiersze bez nazwy
+
+      const tile = document.createElement('a');
+      tile.className = 'brand-tile';
+
+      // Generowanie linku na podstawie sluga
+      const slug = slugify(row.name) || 'unknown';
+      tile.href = `brand.html?brand=${encodeURIComponent(slug)}`;
+      tile.setAttribute("aria-label", row.name);
+      tile.setAttribute('title', `Przejdź do listy produktów marki ${row.name}`);
+
+      // Ustawienie kolorów z fallbackami
+      tile.style.setProperty('--color1', row.color1 && isValidColor(row.color1) ? row.color1 : '#ffffff');
+      tile.style.setProperty('--color2', row.color2 && isValidColor(row.color2) ? row.color2 : '#000000');
+      tile.style.setProperty('--color3', row.color3 && isValidColor(row.color3) ? row.color3 : '#cccccc');
+
+
+      // Nazwa marki
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = row.name;
+      tile.appendChild(nameSpan);
+
+      return tile;
+    }
+
+    // Zaktualizowana funkcja loadBrands (z Twojej propozycji, zintegrowana z logiką tworzenia kafelków)
+    async function loadBrands() {
+      const gridContainer = document.querySelector('.brand-grid'); // Przeniesione tutaj dla spójności
+
+      try {
+        const response = await fetch('brands.csv');
+        if (!response.ok) throw new Error('Nie udało się załadować pliku CSV');
+
+        const text = await response.text();
+        const results = Papa.parse(text, { header: true, skipEmptyLines: true });
+
+        if (results.errors.length > 0) {
+          throw new Error('Błąd parsowania CSV: ' + results.errors[0].message);
+        }
+
+        gridContainer.innerHTML = ''; // Wyczyszczenie "Ładowanie..."
+
+        const fragment = document.createDocumentFragment();
+
+        results.data.forEach(row => {
+          const tile = createBrandTile(row);
+          if (tile) fragment.appendChild(tile);
+        });
+
+        gridContainer.appendChild(fragment);
+      } catch (error) {
+        console.error('Błąd:', error);
+        gridContainer.innerHTML = '<p>❌ Nie udało się załadować marek.</p>';
+      }
+    }
+
+    // Wywołanie funkcji bezpośrednio (zamiast drugiego listenera)
+    loadBrands();
   });
-});
-
 </script>
-
+</script>
 
   <section id="carousel">
       <div class="logo-carousel">

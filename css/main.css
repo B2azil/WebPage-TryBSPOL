@@ -129,30 +129,42 @@ text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
 }
 
 
-
+ 
 .brand-grid {
-    display: flex; 
-    gap: 20px; 
-    flex-wrap: wrap; 
-    justify-content: center; }
+  display: flex; 
+  gap: 1.2rem; 
+  flex-wrap: wrap; 
+  justify-content: center;
+  padding: 1rem 0;}
 
-.brand-tile { 
-    padding: 30px 40px; 
-    background: #f2f2f2; 
-    border-radius: 12px; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
-    font-size: 1.3em; 
-    text-align: center; 
-    text-decoration: none; 
-    color: #212529; 
-    transition: transform 0.2s, box-shadow 0.2s; }
+.brand-tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 3.5rem;
+  margin: 8px;
+  font-size: 1.1em; /* może kiedyś zwiększę */
+  text-decoration: none;
+  color: #000; /* Domyślny kolor tekstu */
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background: #f2f2f2; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Lekki cień */
+}
 
-.brand-tile:hover { 
-    transform: scale(1.1); 
-    box-shadow: 0 6px 18px rgba(0,0,0,0.18); 
-    background: #e6e6e6; }
+.brand-tile:hover {
+  transform: scale(1.08); /* Lekkie powiększenie */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25); /* Mocniejszy cień */
+  backdrop-filter: blur(5px); /* Rozmycie tła (efekt szkła) – działa w nowoczesnych przeglądarkach */
+  background: linear-gradient(90deg, var(--color1, #f2f2f2) 0%, var(--color2, #e0e0e0) 50%, var(--color3, #d0d0d0) 100%); /* Animowany gradient */
+  animation: liquid-glass 2s ease-out; /* Animacja */
+}
 
-
+@keyframes liquid-glass {
+  0% { opacity: 0.8; filter: brightness(1); }
+  50% { opacity: 1; filter: brightness(1.2); } /* Jaśniejszy w środku */
+  100% { opacity: 0.9; filter: brightness(1.1); }
+}
 
 
 /* animacja dla logo */
