@@ -146,6 +146,13 @@ header a {
     font-weight: 400;
 }
 
+.product-BarCode {
+    font-size: 0.6rem;
+    padding-bottom: 0.5rem; /* 8px -> 0.5rem */
+    color: #999999;
+    margin-top: 0.5rem; /* 8px -> 0.5rem */
+}
+
 /* Media query for mobile devices */
 @media (max-width: 768px) {
     .product-grid {
