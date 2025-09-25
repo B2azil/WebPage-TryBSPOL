@@ -268,48 +268,48 @@
       });
     }
 
-        function renderStores(data) {
-          const buyLinks = document.querySelector('.buy-links');
-          if (!buyLinks) {
-            console.error('Element .buy-links nie istnieje.');
-            return;
-          }
-          buyLinks.innerHTML = '';
-          
-          // Dla każdej linii CSV utwórz element HTML
-          let validRows = 0;
-          data.forEach(function(row) {
-            const sanitizedLink = sanitizeString(row.link);
-            const sanitizedImage = sanitizeString(row.image);
-            if (row.image && row.link && isValidUrl(row.link) && isValidUrl(row.image) && isValidUrl(sanitizedLink) && isValidUrl(sanitizedImage)) {
-              validRows++;
-              const span = document.createElement('span');
-              span.className = 'container';
+    function renderStores(data) {
+      const buyLinks = document.querySelector('.buy-links');
+      if (!buyLinks) {
+        console.error('Element .buy-links nie istnieje.');
+        return;
+      }
+      buyLinks.innerHTML = '';
+      
+      // Dla każdej linii CSV utwórz element HTML
+      let validRows = 0;
+      data.forEach(function(row) {
+        const sanitizedLink = sanitizeString(row.link);
+        const sanitizedImage = sanitizeString(row.image);
+        if (row.image && row.link && isValidUrl(row.link) && isValidUrl(row.image) && isValidUrl(sanitizedLink) && isValidUrl(sanitizedImage)) {
+          validRows++;
+          const span = document.createElement('span');
+          span.className = 'container';
 
-              const a = document.createElement('a');
-              a.href = sanitizedLink;
-              a.target = '_blank';
-              a.rel = 'noopener noreferrer'; // Poprawka bezpieczeństwa
-              a.setAttribute('aria-label', `Przejdź do sklepu ${row.alt || row.link}`);
+          const a = document.createElement('a');
+          a.href = sanitizedLink;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer'; // Poprawka bezpieczeństwa
+          a.setAttribute('aria-label', `Przejdź do sklepu ${row.alt || row.link}`);
 
-              const img = document.createElement('img');
-              img.src = sanitizedImage;
-              img.alt = row.alt || `Logo sklepu ${row.link}`; //  Domyślny alt jeśli brak zdjęcia
-              img.setAttribute('loading', 'lazy'); 
-              img.setAttribute('aria-hidden', 'true');
+          const img = document.createElement('img');
+          img.src = sanitizedImage;
+          img.alt = row.alt || `Logo sklepu ${row.link}`; //  Domyślny alt jeśli brak zdjęcia
+          img.setAttribute('loading', 'lazy'); 
+          img.setAttribute('aria-hidden', 'true');
 
-              a.appendChild(img);
-              span.appendChild(a);
-              buyLinks.appendChild(span);
-            } else {
-              console.warn('Nieprawidłowy wiersz w CSV:', row );
-            }
-          });
-
-          if (validRows === 0) {
-            buyLinks.innerHTML = '<p>Brak dostępnych sklepów w tej chwili.</p>';
-          }
+          a.appendChild(img);
+          span.appendChild(a);
+          buyLinks.appendChild(span);
+        } else {
+          console.warn('Nieprawidłowy wiersz w CSV:', row );
         }
+      });
+
+      if (validRows === 0) {
+        buyLinks.innerHTML = '<p>Brak dostępnych sklepów w tej chwili.</p>';
+      }
+    }
 
     // Wywołaj funkcję po załadowaniu strony
     window.addEventListener('DOMContentLoaded', loadStoresFromCSV);
