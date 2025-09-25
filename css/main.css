@@ -50,12 +50,15 @@ section {
     display: flex;
     flex-wrap: wrap;
     gap: 1.2rem;
+    justify-content: center;
 }
 .buy-links a img {
-    max-width: 120px;
+    max-width: 150px;
     transition: transform 0.2s;
 }
-.buy-links a:hover img { transform: scale(1.1); }
+.buy-links a:hover img { 
+  transform: scale(1.1); 
+}
 
 footer {
     background: #333;
@@ -77,6 +80,7 @@ display: flex;
 justify-content: center;  /* wyśrodkowanie poziome */
 align-items: center;      /* wyśrodkowanie pionowe */
 }
+
 
 #cont {
 padding: 2vh 0;

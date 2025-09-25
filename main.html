@@ -187,34 +187,134 @@
   </script>
 </section>
 
+<section id="buy" class="buy">
+  <h2>Gdzie można nas spotkać</h2>
+  <div class="buy-links"></div>
+  <script>
+    // Funkcja do ładowania i parsowania CSV
+    function isValidUrl(string) {
+      try {
+        const url = new URL(string);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+      } catch (_) {
+        return false;
+      }
+    }
 
+    function sanitizeString(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
 
+    function loadStoresFromCSV() {
+      if (typeof Papa === 'undefined') {
+        console.error('Biblioteka PapaParse nie jest załadowana.');
+        const buyLinks = document.querySelector('.buy-links');
+        if (buyLinks) {
+          buyLinks.innerHTML = '<p>Nie udało się załadować listy sklepów.</p>';
+        }
+        return;
+      }
+      const cached = localStorage.getItem('storesData');
+      const cacheTime = localStorage.getItem('storesCacheTime');
+      const cacheDuration = 6 * 60 * 60 * 1000; // 6 godzin w milisekundach
+      if (cached && cacheTime && (Date.now() - parseInt(cacheTime) < cacheDuration)) {
+        // Cache jest świeży, użyj go
+        try {
+          const data = JSON.parse(cached);
+          renderStores(data);
+          return;
+          } catch (e) {
+            console.warn('Nieprawidłowy cache:', e);
+            localStorage.removeItem('storesData');
+            localStorage.removeItem('storesCacheTime');
+          }
+        }
 
+      // Jeśli brak cache'u, pobierz CSV
+      const csvPath = 'stores.csv';
 
-<!-- 
-    <section id="portfolio" class="portfolio">
-        <h2>Portfolio marki</h2>
-        <div class="portfolio-grid">
-            <a href="brand_Legia_Warszawa.html"><img src="https://upload.wikimedia.org/wikipedia/en/6/6d/Legia_Warsaw_logo.svg" alt="Legia Warszawa"></a>
-            <a href="brand4.html"><img src="https://football-logos.cc/logos/poland/700x700/lech-poznan.png" alt="Lech Poznań"></a>
-            <a href="brand2.html"><img src="https://via.placeholder.com/150" alt="Brand 2"></a>
-            <a href="brand3.html"><img src="https://via.placeholder.com/150" alt="Brand 3"></a>
-            <a href="brand4.html"><img src="https://via.placeholder.com/150" alt="Brand 4"></a>
-        </div>
-    </section> -->
+      // Użyj PapaParse do pobrania i parsowania CSV
+      Papa.parse(csvPath, {
+        download: true, // Pobiera plik jeśli jest zdalny; dla lokalnego też działa
+        header: true,   // Pierwsza linia to nagłówki
+        skipEmptyLines: true,
+        complete: function(results) {
+          const buyLinks = document.querySelector('.buy-links');
+          if (!buyLinks) {
+            console.error('Element .buy-links nie istnieje.');
+            return;
+          }
+          if (results.data.length > 0) {
+            try {
+              localStorage.setItem('storesData', JSON.stringify(results.data));
+              localStorage.setItem('storesCacheTime', Date.now());
+            } catch (e) {
+              console.warn('Nie można zapisać danych do localStorage:', e);
+            }
+            renderStores(results.data);
+          } else {
+            buyLinks.innerHTML = '<p>Brak dostępnych danych w pliku.</p>';
+          }
+        },
+        error: function(error) {
+          console.error('Błąd podczas ładowania CSV:', error);
+          const buyLinks = document.querySelector('.buy-links');
+          if (buyLinks) {
+            buyLinks.innerHTML = '<p>Nie udało się załadować listy sklepów: ' + String(error) + '</p>';
+          }
+        }
+      });
+    }
 
-    <section id="buy" class="buy">
-        <h2>Gdzie można nas spotkać</h2>
-        <div class="buy-links">
-            <span class="container"><a href="https://allegro.pl/uzytkownik/BandSPolska" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro"></a></span>
-            <span class="container"><a href="https://www.empik.com/sklepy/b-s-polska,3078,m" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Empik.svg/330px-Empik.svg.png" alt="Empik"></a></span>
-            <span class="container"><a href="https://erli.pl/sklep/BandSPolska/33689" target="_blank"><img src="https://erli.pl/sprzedawcy/assets/images/logo-shop.svg" alt="Erli"></a></span>
-            <span class="container"><a href="https://www.kaufland.pl/shops/BandSPolska/" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Kaufland_2016_horizontal.svg" alt="Kaufland"></a></span>
-            <span class="container" id="cont" target="_blank"><a href="https://www.olx.pl/oferty/uzytkownik/1PcRlD/"><img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/OLX_2019.svg" alt="OLX"></a></span>
-            <span class="container"><a href="https://www.amazon.pl/s?me=A10IUM9O23CD0Y&marketplaceID=A1C3SOZRARQ6R3" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon"></a></span>
-            <span class="container"><a href="https://arena.pl/sprzedawca/b_and_s_polska/sklep" target="_blank"><img src="https://arena.pl/dist/img/logo-arena.svg" alt="arena"></a></span>
-        </div>
-    </section>
+        function renderStores(data) {
+          const buyLinks = document.querySelector('.buy-links');
+          if (!buyLinks) {
+            console.error('Element .buy-links nie istnieje.');
+            return;
+          }
+          buyLinks.innerHTML = '';
+          
+          // Dla każdej linii CSV utwórz element HTML
+          let validRows = 0;
+          data.forEach(function(row) {
+            const sanitizedLink = sanitizeString(row.link);
+            const sanitizedImage = sanitizeString(row.image);
+            if (row.image && row.link && isValidUrl(row.link) && isValidUrl(row.image) && isValidUrl(sanitizedLink) && isValidUrl(sanitizedImage)) {
+              validRows++;
+              const span = document.createElement('span');
+              span.className = 'container';
+
+              const a = document.createElement('a');
+              a.href = sanitizedLink;
+              a.target = '_blank';
+              a.rel = 'noopener noreferrer'; // Poprawka bezpieczeństwa
+              a.setAttribute('aria-label', `Przejdź do sklepu ${row.alt || row.link}`);
+
+              const img = document.createElement('img');
+              img.src = sanitizedImage;
+              img.alt = row.alt || `Logo sklepu ${row.link}`; //  Domyślny alt jeśli brak zdjęcia
+              img.setAttribute('loading', 'lazy'); 
+              img.setAttribute('aria-hidden', 'true');
+
+              a.appendChild(img);
+              span.appendChild(a);
+              buyLinks.appendChild(span);
+            } else {
+              console.warn('Nieprawidłowy wiersz w CSV:', row );
+            }
+          });
+
+          if (validRows === 0) {
+            buyLinks.innerHTML = '<p>Brak dostępnych sklepów w tej chwili.</p>';
+          }
+        }
+
+    // Wywołaj funkcję po załadowaniu strony
+    window.addEventListener('DOMContentLoaded', loadStoresFromCSV);
+  </script>
+</section>
 
     <footer id="contact">
         <div class="contact">
