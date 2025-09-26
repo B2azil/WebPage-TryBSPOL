@@ -37,147 +37,132 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const hero = document.getElementById('hero');
+    document.addEventListener('DOMContentLoaded', () => {
       const bg1 = document.getElementById('bg1');
       const bg2 = document.getElementById('bg2');
       const heroImg = document.getElementById('hero-img');
-      let currentIndex = 0;
-      const intervalTime = 5000;
+
       let activeBg = bg1;
       let inactiveBg = bg2;
+      let currentIndex = 0;
       let intervalId = null;
 
-      // Ładuj dane z zewnętrznego CSV
-      fetch('main/images.csv')
+      const intervalTime = 5000;
+      const maxRunTime = 1 * 30 * 60 * 1000; // 30 minut
+
+      // Funkcja fallbacku
+      function setFallback() {
+        const fallback = "fallback.jpg";
+        activeBg.style.backgroundImage =
+          `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${fallback}')`;
+        if (heroImg) {
+          heroImg.src = fallback;
+          heroImg.alt = "Domyślne tło";
+        }
+      }
+
+      // Funkcja zmiany tła
+      function changeBackground(images) {
+        const nextImage = images[currentIndex];
+        inactiveBg.style.backgroundImage =
+          `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${nextImage.url}')`;
+        inactiveBg.style.opacity = 1;
+        activeBg.style.opacity = 0;
+
+        if (heroImg) {
+          heroImg.src = nextImage.url;
+          heroImg.alt = nextImage.desc;
+        }
+
+        setTimeout(() => {
+          [activeBg, inactiveBg] = [inactiveBg, activeBg];
+        }, 1000);
+
+        currentIndex = (currentIndex + 1) % images.length;
+      }
+
+      // Ładuj CSV
+      fetch("main/images.csv")
         .then(response => {
-          if (!response.ok) {
-            throw new Error('Błąd ładowania CSV: ' + response.status);
-          }
-          return response.text(); 
+          if (!response.ok) throw new Error("Błąd ładowania CSV");
+          return response.text();
         })
         .then(text => {
-          // Parsuj CSV
-          const lines = text
-            .split('\n')
-            .map(line => line.trim())
-            .filter(line => line.length > 0);
-
-          if (lines.length === 0) {
-            console.error('Brak danych w CSV');
-            // Fallback
-            bg1.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('fallback.jpg')`;
-            if (heroImg) {
-              heroImg.src = 'fallback.jpg';
-              heroImg.alt = 'Domyślne tło';
-            }
+          const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+          if (lines.length <= 1) {
+            console.error("Brak danych w CSV");
+            setFallback();
             return;
           }
 
           // Usuń nagłówek
           lines.shift();
 
-          // Przetwórz linie na obiekty {url, desc}
           const images = lines.map(line => {
-            const parts = line.split(';');
+            const parts = line.split(";");
             if (parts.length < 2) {
-              console.warn('Niepoprawna linia w CSV:', line);
+              console.warn("Niepoprawna linia:", line);
               return null;
             }
-            const url = parts[0].trim();
-            const desc = parts.slice(1).join(';').trim();
-            try {
-              new URL(url);
-              return { url, desc };
-            } catch {
-              console.warn('Nieprawidłowy URL w CSV:', url);
-              return null;
-            }
-          }).filter(item => item !== null);
+            return { url: parts[0].trim(), desc: parts.slice(1).join(";").trim() };
+          }).filter(Boolean);
 
           if (images.length === 0) {
-            console.error('Brak poprawnych obrazów w CSV');
-            bg1.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('fallback.jpg')`;
-            if (heroImg) {
-              heroImg.src = 'fallback.jpg';
-              heroImg.alt = 'Domyślne tło';
-            }
+            console.error("Brak poprawnych obrazów");
+            setFallback();
             return;
           }
 
-          // Funkcja zmiany tła
-          function changeBackground() {
-            const nextImage = images[currentIndex];
-            inactiveBg.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${nextImage.url}')`;
-            inactiveBg.style.opacity = 1;
-            activeBg.style.opacity = 0;
-            if (heroImg) {
-              heroImg.src = nextImage.url;
-              heroImg.alt = nextImage.desc;
-            }
-
-            setTimeout(() => {
-              const temp = activeBg;
-              activeBg = inactiveBg;
-              inactiveBg = temp;
-            }, 1000);
-
-            currentIndex = (currentIndex + 1) % images.length;
-          }
-
-          // Inicjalizuj pierwsze tło
-          bg1.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${images[0].url}')`;
-          bg1.style.opacity = 1;
-          bg2.style.opacity = 0;
+          // Inicjalizacja pierwszego tła
+          activeBg.style.backgroundImage =
+            `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${images[0].url}')`;
+          activeBg.style.opacity = 1;
+          inactiveBg.style.opacity = 0;
           if (heroImg) {
             heroImg.src = images[0].url;
             heroImg.alt = images[0].desc;
           }
           currentIndex = 1;
 
-          // Uruchom interwał tylko jeśli więcej niż jedno tło
+          // Uruchom interwał, jeśli więcej niż 1 obraz
           if (images.length > 1) {
-            intervalId = setInterval(changeBackground, intervalTime);
+            intervalId = setInterval(() => changeBackground(images), intervalTime);
           }
 
           // Preload obrazów
           images.forEach(item => {
             const img = new Image();
             img.src = item.url;
-            img.onerror = () => console.warn(`Nie udało się załadować obrazu: ${item.url}`);
+            img.onerror = () => console.warn("Nie udało się załadować:", item.url);
           });
 
-          // Zabezpieczenie przed długotrwałym interwałem
-          const maxRunTime = 2 * 60 * 60 * 1000; // 2 godziny
+          // Limit działania
           setTimeout(() => {
             if (intervalId) {
               clearInterval(intervalId);
-              console.log('Interwał zatrzymany po 2 godzinach dla oszczędności zasobów');
+              console.log("Interwał zatrzymany po 2h");
             }
           }, maxRunTime);
 
-          // Pauza interwału, gdy karta nie jest aktywna
-          document.addEventListener('visibilitychange', () => {
+          // Pauza, gdy karta nieaktywna
+          document.addEventListener("visibilitychange", () => {
             if (document.hidden && intervalId) {
               clearInterval(intervalId);
               intervalId = null;
-              console.log('Interwał zatrzymany - karta nieaktywna');
+              console.log("Interwał zatrzymany (karta nieaktywna)");
             } else if (!document.hidden && !intervalId && images.length > 1) {
-              intervalId = setInterval(changeBackground, intervalTime);
-              console.log('Interwał wznowiony - karta aktywna');
+              intervalId = setInterval(() => changeBackground(images), intervalTime);
+              console.log("Interwał wznowiony (karta aktywna)");
             }
           });
         })
-        .catch(error => {
-          console.error('Błąd fetch:', error);
-          bg1.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('fallback.jpg')`;
-          if (heroImg) {
-            heroImg.src = 'fallback.jpg';
-            heroImg.alt = 'Domyślne tło';
-          }
+        .catch(err => {
+          console.error("Błąd fetch:", err);
+          setFallback();
         });
     });
   </script>
+
 </section>
 
 
