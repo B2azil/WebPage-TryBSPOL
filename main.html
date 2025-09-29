@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <!-- <link rel="stylesheet" href="css/reset.css"> -->
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
@@ -281,6 +282,7 @@
       "https://football-logos.cc/logos/poland/700x700/lech-poznan.png",
       "img/TE logo.jpg",
       "https://upload.wikimedia.org/wikipedia/de/8/81/Pogon_Szczecin.svg",
+      "img/TE logo.jpg",
     ];
 
     // Duplikujemy logo aby płynnie zapętlić przesuwanie
@@ -452,15 +454,18 @@
   </script>
 </section>
 
-<footer id="contact">
+<footer id="contact" role="contentinfo" aria-label="Informacje kontaktowe">
     <div class="contact">
         <h4>Kontakt</h4>
-        <p>Email: kontakt@twojsklep.pl</p>
-        <p>Telefon: 123-456-789</p>
+        <p><i class="fa fa-envelope" aria-hidden="true" title="Adres email"></i>Email: <a href="mailto:bspolska@bspolska.com.pl">bspolska@bspolska.com.pl</a></p>
+        <p><i class="fa fa-phone" aria-hidden="true" title="numer telefonu"></i>Telefon: <a href="tel:+48530288284">530 288 284</a></p>
     </div>
     <div class="address">
         <h4>Adres</h4>
-        <p>Ul. Batorego 3, 05-083 Topolin</p>
+        <p><i class="fas fa-map-marker-alt"></i> Ul. Batorego 3, 05-083 Topolin</p>
+    </div>
+    <div class="copyright">
+        <small> &#169; <script>document.write(new Date().getFullYear())</script> B&S Polska. Wszelkie prawa zastrzeżone.</small>
     </div>
 </footer>
 </body>

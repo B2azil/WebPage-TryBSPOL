@@ -64,17 +64,82 @@ section {
   transform: scale(1.1); 
 }
 
+
+
 footer {
     background: #333;
     color: white;
-    padding: 1rem 10%;
+    padding: 2rem 10%;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    font-family: 'Roboto', sans-serif;
 }
+
 footer .contact, footer .address {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    min-width: 200px;
 }
+
+footer h4 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #555;
+    padding-bottom: 5px;
+}
+
+footer p {
+    font-size: 1rem;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+footer p i {
+    margin-right: 10px; /* Odstęp między ikoną a tekstem */
+}
+
+footer p a {
+    color: #00c01d;
+    text-decoration: none;
+    margin-left: 0.5em;
+}
+
+@media (max-width: 600px) {
+    footer {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    footer .contact, footer .address {
+        margin-bottom: 30px;
+    }
+}
+
+footer p a:hover {
+    color: #bbb;
+    transition: color 0.3s;
+}
+
+footer .copyright {
+    width: 100%;
+    text-align: center;
+    padding-top: 10px;
+    font-size: 0.9rem;
+    color: #ccc; 
+    border-top: 1px solid #555
+}
+
+@media (max-width: 600px) {
+    footer .copyright {
+        padding-top: 15px;
+    }
+
+    footer p i {
+    margin-right: 15px; /* Odstęp między ikoną a tekstem */
+}
+}
+
 .logo{
     width: 100px;
 }
@@ -197,39 +262,6 @@ background-color: black;
   50% { opacity: 1; filter: brightness(1.2); } /* Jaśniejszy w środku */
   100% { opacity: 0.9; filter: brightness(1.1); }
 }
-
-
-/* animacja dla logo */
-.slide-container {
-  overflow: hidden;
-  width: 100%;
-}
-
-.track {
-  display: flex;
-  width: max-content;
-  animation: scroll-left 12s linear infinite;
-}
-
-@keyframes scroll-left {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.slide-container img {
-  width: auto;
-  height: 100px;
-  margin: 0 15px;
-}
-
-
-
-
-
 
 /* USTAWIENIA dla logos1 */
 .logos1 {
