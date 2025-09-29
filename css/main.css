@@ -1,238 +1,341 @@
-* { margin: 0; 
-  padding: 0; 
-  box-sizing: border-box; 
-  scroll-behavior: smooth; 
+/* ========== Design tokens ========== */
+:root {
+  --bg-900: #333;
+  --text-inverse: #fff;
+  --brand: #00c01d;
+  --brand-700: #00911C;
+  --muted-bg: #f9f9f9;
+  --footer-border: #555;
+  --footer-muted: #ccc;
+
+  --radius-s: 5px;
+  --radius-m: 8px;
+  --radius-l: 12px;
+
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.2rem;
+  --space-4: 2rem;
+
+  --shadow-1: 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-2: 0 8px 16px rgba(0, 0, 0, 0.25);
 }
 
-body { 
-  font-family: Arial, sans-serif; 
-  line-height: 1.6; }
+/* ========== Reset / base ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
 
+html, body { height: 100%; }
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ========== Layout: header, sections ========== */
 header {
-    background: #333;
-    color: #fff;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  background: var(--bg-900);
+  color: var(--text-inverse);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky; /* Sticky header */
+  top: 0;
+  z-index: 1000;
+  transition: padding 0.3s ease; /* Dla efektu zmniejszania */
 }
-header nav a {
-    color: #fff;
-    margin-left: 15px;
-    text-decoration: none;
+
+header.scrolled {
+  padding: var(--space-1) var(--space-3); /* Mniejszy po scrollu */
 }
-header nav a:hover { 
-  text-decoration: underline; 
+
+header nav a.nav-link {
+  color: var(--text-inverse);
+  margin-inline-start: 20px; 
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+  position: relative; /* Dla underline animacji */
 }
+
+header nav a.nav-link:hover {
+  color: var(--brand); /* Zmiana na brand color */
+  transform: scale(1.05); /* Lekkie skalowanie */
+}
+
+header nav a.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--brand);
+  transition: width 0.3s ease;
+}
+
+header nav a.nav-link:hover::after {
+  width: 100%; /* Animowany underline */
+}
+
+header nav a.nav-link.active {
+  font-weight: bold; /* Aktywny link */
+}
+
+.hamburger {
+  display: none; /* Ukryty na desktop */
+  background: none;
+  border: none;
+  cursor: pointer;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 24px;
+  width: 30px;
+}
+
+.hamburger-line {
+  background: var(--text-inverse);
+  height: 3px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.mobile-nav {
+  display: none; /* Ukryta domyślnie */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: var(--bg-900);
+  flex-direction: column;
+  padding: var(--space-2);
+  z-index: 999;
+}
+
+.mobile-nav a {
+  margin: var(--space-1) 0;
+  text-align: center;
+}
+
+/* Media queries dla mobile */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none; /* Ukryj desktop nav na mobile */
+  }
+  .hamburger {
+    display: flex; /* Pokaż hamburger */
+  }
+  .mobile-nav.open {
+    display: flex; /* Pokaż po kliknięciu */
+  }
+  header {
+    padding: var(--space-1) var(--space-2); /* Mniejszy na mobile */
+  }
+}
+
 
 section {
-    padding: 2rem 10%;
+  padding: var(--space-4) 10%;
 }
 
 #hero-section {
-    padding: 0;
+  padding: 0;
 }
 
-.about, .portfolio, .buy {
-    background: #f9f9f9;
-    margin-bottom: 1rem;
+.about,
+.portfolio,
+.buy {
+  background: var(--muted-bg);
+  margin-bottom: 1rem;
 }
 
+/* ========== Components: grids, tiles, buy-links ========== */
 .portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
 }
+
 .portfolio-grid img {
-    max-width: 100%;
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
+  background: #fff;
+  padding: 10px;
+  border-radius: var(--radius-m);
 }
 
-.buy-links{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.2rem;
-    justify-content: center;
+.buy-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
 }
+
 .buy-links a img {
-    max-width: 150px;
-    transition: transform 0.2s;
-}
-.buy-links a:hover img { 
-  transform: scale(1.1); 
+  max-width: 150px;
+  transition: transform 0.2s ease;
 }
 
+.buy-links a:hover img {
+  transform: scale(1.1);
+}
 
-
+/* ========== Footer ========== */
 footer {
-    background: #333;
-    color: white;
-    padding: 2rem 10%;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    font-family: 'Roboto', sans-serif;
+  background: var(--bg-900);
+  color: var(--text-inverse);
+  padding: var(--space-4) 10%;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  font-family: 'Roboto', sans-serif;
 }
 
-footer .contact, footer .address {
-    margin-bottom: 20px;
-    min-width: 200px;
+footer .contact,
+footer .address {
+  margin-bottom: 20px;
+  min-width: 200px;
 }
 
 footer h4 {
-    font-size: 1.2rem;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #555;
-    padding-bottom: 5px;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--footer-border);
+  padding-bottom: 5px;
 }
 
 footer p {
-    font-size: 1rem;
-    margin: 8px 0;
-    display: flex;
-    align-items: center;
+  font-size: 1rem;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
 }
 
 footer p i {
-    margin-right: 10px; /* Odstęp między ikoną a tekstem */
+  margin-right: 10px;
 }
 
 footer p a {
-    color: #00c01d;
-    text-decoration: none;
-    margin-left: 0.5em;
-}
-
-@media (max-width: 600px) {
-    footer {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    footer .contact, footer .address {
-        margin-bottom: 30px;
-    }
+  color: var(--brand);
+  text-decoration: none;
+  margin-left: 0.5em;
+  transition: color 0.3s ease;
 }
 
 footer p a:hover {
-    color: #bbb;
-    transition: color 0.3s;
+  color: #bbb;
 }
 
 footer .copyright {
-    width: 100%;
-    text-align: center;
-    padding-top: 10px;
-    font-size: 0.9rem;
-    color: #ccc; 
-    border-top: 1px solid #555
+  width: 100%;
+  text-align: center;
+  padding-top: 10px;
+  font-size: 0.9rem;
+  color: var(--footer-muted);
+  border-top: 1px solid var(--footer-border);
 }
 
-@media (max-width: 600px) {
-    footer .copyright {
-        padding-top: 15px;
-    }
-
-    footer p i {
-    margin-right: 15px; /* Odstęp między ikoną a tekstem */
-}
-}
-
-.logo{
-    width: 100px;
-}
+/* ========== Header/logo, containers ========== */
+.logo { width: 100px; }
 
 .container {
-display: flex;
-justify-content: center;  /* wyśrodkowanie poziome */
-align-items: center;      /* wyśrodkowanie pionowe */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-
+/* ========== Section: black band ========== */
 #cont {
-padding: 2vh 0;
-background-color: black;
+  padding: 2vh 0;
+  background-color: #000;
 }
 
+/* ========== Hero ========== */
 .hero {
   position: relative;
-  overflow: hidden; 
-  height: 70vh; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  text-align: center; 
-  color: white; 
-  flex-direction: column; 
+  overflow: hidden;
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-inverse);
+  flex-direction: column;
 }
 
 .hero-bg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)); /* Stały gradient */
-  transition: opacity 1s ease-in-out; 
-  z-index: 1; 
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+  transition: opacity 1s ease-in-out;
+  z-index: 1;
 }
 
 .hero-content {
   position: relative;
-  z-index: 2; /* Na wierzchu */
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  color: white;
+  color: var(--text-inverse);
   text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
-  max-width: 80%; 
+  max-width: 80%;
 }
 
-.hero p { font-size: 1.3rem; 
-}
+.hero p { font-size: 1.3rem; }
 
-.hero .logo { width: 15rem; 
+.hero .logo {
+  width: 15rem;
   margin-bottom: 3rem;
 }
+
 .hero-cta {
-  color: white;
+  color: var(--text-inverse);
   text-decoration: none;
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-s);
   transition: background-color 0.3s ease;
-  background-color: #00c01d;
+  background-color: var(--brand);
   cursor: pointer;
   margin-top: 0.5em;
   font-size: 1.2em;
 }
+
 .hero-cta:hover {
-  background-color: #00911C;
+  background-color: var(--brand-700);
 }
+
 .hero-text {
   max-width: 80%;
 }
+
 .hero-text h1 {
   font-size: 2.5em;
   margin-bottom: 0.5em;
 }
 
-
-
- 
+/* ========== Brand grid / tile ========== */
 .brand-grid {
-  display: flex; 
-  gap: 1.2rem; 
-  flex-wrap: wrap; 
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
   justify-content: center;
-  padding: 1rem 0;}
+  padding: 1rem 0;
+}
 
 .brand-tile {
   display: inline-flex;
@@ -240,64 +343,69 @@ background-color: black;
   justify-content: center;
   padding: 2rem 3.5rem;
   margin: 8px;
-  font-size: 1.1em; /* może kiedyś zwiększę */
+  font-size: 1.1em;
   text-decoration: none;
-  color: #000; /* Domyślny kolor tekstu */
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  background: #f2f2f2; 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* Lekki cień */
+  color: #000;
+  border-radius: var(--radius-l);
+  background: #f2f2f2;
+  box-shadow: var(--shadow-1);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    filter 0.3s ease,
+    background 0.3s ease;
 }
 
 .brand-tile:hover {
-  transform: scale(1.08); /* Lekkie powiększenie */
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25); /* Mocniejszy cień */
-  backdrop-filter: blur(5px); /* Rozmycie tła (efekt szkła) – działa w nowoczesnych przeglądarkach */
-  background: linear-gradient(90deg, var(--color1, #f2f2f2) 0%, var(--color2, #e0e0e0) 50%, var(--color3, #d0d0d0) 100%); /* Animowany gradient */
-  animation: liquid-glass 2s ease-out; /* Animacja */
+  transform: scale(1.08);
+  box-shadow: var(--shadow-2);
+  backdrop-filter: blur(5px);
+  background: linear-gradient(
+    90deg,
+    var(--color1, #f2f2f2) 0%,
+    var(--color2, #e0e0e0) 50%,
+    var(--color3, #d0d0d0) 100%
+  );
+  animation: liquid-glass 2s ease-out;
 }
 
 @keyframes liquid-glass {
-  0% { opacity: 0.8; filter: brightness(1); }
-  50% { opacity: 1; filter: brightness(1.2); } /* Jaśniejszy w środku */
+  0%   { opacity: 0.8; filter: brightness(1); }
+  50%  { opacity: 1;   filter: brightness(1.2); }
   100% { opacity: 0.9; filter: brightness(1.1); }
 }
 
-/* USTAWIENIA dla logos1 */
+/* ========== Logos slider (logos1) ========== */
 .logos1 {
-  --gap: clamp(24px, 4vw, 50px); /* odstęp między logotypami */
-  --duration: 20s; /* ustawienie prędkości przesunięcia logotypów – im większa wartość = wolniej */
+  --gap: clamp(24px, 4vw, 50px);
+  --duration: 20s;
 }
 
-/* Maska widoku */
 .logos1-mask {
   overflow: hidden;
   width: 100%;
   position: relative;
 }
 
-/* Tor, który przesuwamy */
 .logos1-track {
   display: flex;
-  width: max-content; /* ważne: szerokość = suma zawartości */
+  width: max-content;
   will-change: transform;
   animation: logos-scroll var(--duration) linear infinite;
 }
 
-.logos1-mask:hover .logos1-track { 
-  animation-play-state: paused; 
+.logos1-mask:hover .logos1-track {
+  animation-play-state: paused;
 }
 
-/* Dwie identyczne grupy */
 .logos1-group {
   display: flex;
   align-items: center;
   gap: var(--gap);
-  flex: 0 0 auto; /* nie pozwól kurczyć */
-  margin: 14px 0; /* trochę przestrzeni pionowej */
+  flex: 0 0 auto;
+  margin: 14px 0;
 }
 
-/* Obrazki */
 .logos1-group img {
   height: clamp(60px, 10vw, 100px);
   width: auto;
@@ -305,19 +413,19 @@ background-color: black;
   vertical-align: middle;
   flex: 0 0 auto;
   filter: grayscale(100%) opacity(0.85);
-  transition: filter .2s ease, transform .2s ease;
+  transition: filter 0.2s ease, transform 0.2s ease;
 }
+
 .logos1-group img:hover {
   filter: grayscale(0%) opacity(1);
   transform: scale(1.04);
 }
 
-/* Styl dla linków w sliderze */
 .logos1-group a {
-  display: flex; /* utrzymuje wymiar logo */
+  display: flex;
   align-items: center;
-  flex: 0 0 auto; /* nie pozwól na zmianę szerokości */
-  margin-right: var(--gap); /* dodaje przerwę między grupami */
+  flex: 0 0 auto;
+  margin-right: var(--gap);
 }
 
 .logos1-group a:hover img {
@@ -325,19 +433,18 @@ background-color: black;
   transform: scale(1.40);
 }
 
-/* Animacja: przesuwamy tor o pół jego szerokości (czyli dokładnie jedną grupę) */
 @keyframes logos-scroll {
   from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  to   { transform: translateX(-50%); }
 }
 
-/* Prefer reduced motion */
+/* Motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .logos1-track { animation: none; }
+  .brand-tile { animation: none; transition: none; }
 }
 
-
-
+/* ========== Logo carousel (second) ========== */
 .logo-carousel {
   overflow: hidden;
   width: 100%;
@@ -345,20 +452,43 @@ background-color: black;
   padding: 16px 0;
   position: relative;
 }
+
 .logo-track {
   display: flex;
   align-items: center;
   width: max-content;
   will-change: transform;
 }
+
 .logo-track img {
   height: 64px;
   width: auto;
   margin-right: 40px;
   filter: grayscale(100%) opacity(0.85);
-  transition: filter .2s, transform .2s;
+  transition: filter 0.2s ease, transform 0.2s ease;
 }
+
 .logo-track img:hover {
   filter: grayscale(0%) opacity(1);
   transform: scale(1.25);
 }
+
+/* ========== Mobile: scalone w jedną sekcję ========== */
+@media (max-width: 600px) {
+  footer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  footer .contact,
+  footer .address {
+    margin-bottom: 30px;
+  }
+
+  footer p i { margin-right: 15px; }
+
+  footer .copyright {
+    padding-top: 15px;
+  }
+}
+
