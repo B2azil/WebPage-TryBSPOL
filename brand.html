@@ -9,7 +9,7 @@
 <body>
 
 <header>
-    <a href="main.html">&larr; Powrót</a>
+    <a href="/">&larr; Powrót</a>
     <img src="img/bspolska.png" alt="Logo marki" class="brand-logo">
 </header>
 
@@ -113,7 +113,7 @@ function render() {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-                <img src="img/${p.image}" alt="${p.name}" class="product-image">
+                <img src="img/Legia/${p.brandPage}/${p.image}" alt="${p.name}" class="product-image">
                 <div class="product-info">
                     <div class="product-name">${p.name}</div>
                     <div class="product-BarCode">${p.BarCode}</div>
@@ -137,7 +137,7 @@ function render() {
 
 document.getElementById('search').addEventListener('input', render);
 
-loadProducts();
+if (!products) loadProducts();
 </script>
 
 </body>

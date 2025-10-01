@@ -26,7 +26,7 @@
       }
 
       try {
-        const response = await fetch('brand_Legia-Warszawa.csv');
+        const response = await fetch('brand/brand_Legia-Warszawa.csv');
         const data = await response.text();
 
         const results = Papa.parse(data, {
@@ -47,11 +47,16 @@
         }
 
         // Dynamiczne wyświetlanie dostępnych zdjęć
+
+        const imageBasePath = `img/`;
+
         const images = [
           product.image, product.image2, product.image3,
           product.image4, product.image5, product.image6,
           product.image7, product.image8
-        ].filter(src => src && src.trim() !== '');
+        ].filter(src => src && src.trim() !== '')
+          .map(src => imageBasePath + src);;
+        
 
         // Galeria
         const galleryHtml = `
@@ -87,7 +92,7 @@
         // Render
         document.getElementById('productDetails').innerHTML = `
           <div class="header">
-            <a href="brand.html?brand=${product.brandPage || 'main.html'}" class="back-link">← Powrót do listy ${product.brand}</a>
+            <a href="brand.html?brand=${product.brandPage || 'index.html'}" class="back-link">← Powrót do listy ${product.brand}</a>
           </div>
 
           <main class="product-page">

@@ -461,9 +461,9 @@ footer .copyright {
 }
 
 .logo-track img {
-  height: 64px;
+  height: clamp(40px, 5vw, 60px);
   width: auto;
-  margin-right: 40px;
+  margin-right: clamp(20px, 3vw, 30px);
   filter: grayscale(100%) opacity(0.85);
   transition: filter 0.2s ease, transform 0.2s ease;
 }
@@ -473,7 +473,7 @@ footer .copyright {
   transform: scale(1.25);
 }
 
-/* ========== Mobile: scalone w jedną sekcję ========== */
+/* ========== Mobile ========== */
 @media (max-width: 600px) {
   footer {
     flex-direction: column;
@@ -489,6 +489,13 @@ footer .copyright {
 
   footer .copyright {
     padding-top: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-track img {
+    height: 40px;
+    margin-right: 20px;
   }
 }
 

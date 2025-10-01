@@ -15,7 +15,7 @@
 <body>
     
 <header id="main-header">
-  <a href="#top" aria-label="Wróć na początek strony">
+  <a href="/" aria-label="Wróć na początek strony">
     <img src="img/bspolska.png" alt="Logo B&S Polska" class="logo">
   </a>
   <nav class="desktop-nav">
@@ -126,7 +126,7 @@ navLinks.forEach(link => {
       }
 
       // Ładuj CSV
-      fetch("main/images.csv")
+      fetch("main/csv/images.csv")
         .then(response => {
           if (!response.ok) throw new Error("Błąd ładowania CSV");
           return response.text();
@@ -280,7 +280,7 @@ navLinks.forEach(link => {
         const gridContainer = document.querySelector('.brand-grid'); // Przeniesione tutaj dla spójności
 
         try {
-          const response = await fetch('main/brands.csv');
+          const response = await fetch('main/csv/brands.csv');
           if (!response.ok) throw new Error('Nie udało się załadować pliku CSV');
 
           const text = await response.text();
@@ -316,53 +316,177 @@ navLinks.forEach(link => {
   <div class="logo-carousel">
     <div class="logo-track" id="logoTrack"></div>
   </div>
-  <script>
-    const LOGOS = [
-      "https://upload.wikimedia.org/wikipedia/en/6/6d/Legia_Warsaw_logo.svg",
-      "img/1SO logo.jpg",
-      "https://football-logos.cc/logos/poland/700x700/lech-poznan.png",
-      "img/TE logo.jpg",
-      "https://upload.wikimedia.org/wikipedia/de/8/81/Pogon_Szczecin.svg",
-      "img/TE logo.jpg",
-    ];
+<script>
+    (function () {
+      const config = {
+        csvUrl: 'main/csv/carousel.csv', // Ścieżka do pliku CSV
+        imageBasePath: 'main/img/', // Prefiks dla wszystkich obrazów
+        fallbackImage: 'main/img/fallback-logo.png', // Zastępczy obraz w folderze main/img
+        speed: 1.2, // px na klatkę (prędkość animacji)
+        direction: 'left', // 'left' lub 'right'
+        logos: [], // Będzie wypełnione po parsowaniu CSV
+        cycleWidth: 0, // Szerokość jednego cyklu (obliczona dynamicznie po załadowaniu obrazów)
+      };
 
-    // Duplikujemy logo aby płynnie zapętlić przesuwanie
-    const carousel = document.getElementById('logoTrack');
-    const wrapper = carousel.parentNode;
+      const carousel = document.getElementById('logoTrack');
+      const wrapper = carousel?.parentNode;
 
-    function fillLogos() {
-      const baseLogos = [...LOGOS];
-      carousel.innerHTML = '';
-      let repetitions = 2;
-      do {
-        baseLogos.forEach(src => {
-          const img = document.createElement('img');
-          img.src = src;
-          carousel.appendChild(img);
-        });
-        repetitions++;
-      } while (carousel.scrollWidth < wrapper.offsetWidth * 2); // powielamy aż "tor" jest dużo dłuższy od widoku
-    }
-    fillLogos();
+      // Walidacja elementów DOM
+      if (!carousel || !wrapper) {
+        console.error('Nie znaleziono elementów karuzeli (logoTrack) lub wrappera (logo-carousel). Sprawdź HTML.');
+        return;
+      }
 
-    // Płynne przesuwanie
-    let position = 0;
-    const speed = 1.2; // px na klatkę (zmień w razie potrzeby)
-    let speedLocked = false;
+      // Funkcja debounce dla optymalizacji resize
+      function debounce(fn, wait) {
+        let timeout;
+        return function (...args) {
+          clearTimeout(timeout);
+          timeout = setTimeout(() => fn.apply(this, args), wait);
+        };
+      }
 
-    function animate() {
-      if (!speedLocked) position -= speed;
-      const logoWidth = carousel.scrollWidth / 2;
-      if (Math.abs(position) >= logoWidth) position = 0;
-      carousel.style.transform = `translateX(${position}px)`;
-      requestAnimationFrame(animate);
-    }
+      // Asynchroniczna funkcja wypełniania logotypów (z czekaniem na załadowanie obrazów)
+      async function fillLogos() {
+        if (config.logos.length === 0) {
+          console.error('Brak logotypów do załadowania. Sprawdź CSV.');
+          return;
+        }
 
-    // Obsługa zatrzymania na hover
-    carousel.parentNode.addEventListener('mouseenter', () => speedLocked = true);
-    carousel.parentNode.addEventListener('mouseleave', () => speedLocked = false);
+        let repetitions = 0;
+        carousel.innerHTML = ''; // Wyczyść
+        const allImgs = []; // Zbieraj obrazy do czekania na onload
 
-    animate();
+        // Pętla do powielania aż tor będzie wystarczająco długi
+        do {
+          config.logos.forEach((item) => {
+            const img = document.createElement('img');
+            img.src = item.src;
+            img.alt = item.alt || 'Logo'; // Domyślny alt z CSV lub fallback
+            img.onerror = () => {
+              console.warn(`Błąd ładowania obrazu: ${item.src}. Używam fallback.`);
+              img.src = config.fallbackImage;
+            };
+            carousel.appendChild(img);
+            allImgs.push(img); // Dodaj do listy do czekania
+          });
+          repetitions++;
+        } while (carousel.scrollWidth < wrapper.offsetWidth * 2);
+
+        // Czekaj na załadowanie wszystkich obrazów (lub błędy)
+        await Promise.all(allImgs.map(img => new Promise((resolve) => {
+          img.onload = resolve;
+          img.onerror = resolve; // Kontynuuj nawet po błędzie
+          if (img.complete) resolve(); // Jeśli już załadowany (z cache)
+        })));
+
+        // Po załadowaniu: Oblicz szerokość jednego cyklu precyzyjnie
+        config.cycleWidth = carousel.scrollWidth / repetitions;
+        console.log(`Wypełniono karuzelę: ${repetitions} powtórzeń, cycleWidth: ${config.cycleWidth}px (po załadowaniu obrazów)`);
+      }
+
+      // Funkcja animacji (z konfigurowalnym kierunkiem i precyzyjnym resetem)
+      let position = 0;
+      let speedLocked = false;
+
+      function animate() {
+        if (!speedLocked && config.cycleWidth > 0) {
+          const effectiveSpeed = config.direction === 'left' ? -config.speed : config.speed;
+          position += effectiveSpeed;
+
+          // Precyzyjny reset pozycji dla płynnego zapętlania
+          if (config.direction === 'left') {
+            if (position <= -config.cycleWidth) {
+              position += config.cycleWidth; // Dodaj cycleWidth zamiast =0, aby uniknąć przeskoku
+            }
+          } else {
+            if (position >= config.cycleWidth) {
+              position -= config.cycleWidth;
+            }
+          }
+        }
+        carousel.style.transform = `translateX(${position}px)`;
+        requestAnimationFrame(animate);
+      }
+
+      // Obsługa hover (zatrzymanie animacji)
+      wrapper.addEventListener('mouseenter', () => {
+        speedLocked = true;
+      });
+      wrapper.addEventListener('mouseleave', () => {
+        speedLocked = false;
+      });
+
+      // Obsługa dotyku (swipe dla mobilnych z lepszym ograniczeniem pozycji)
+      let touchStartX = 0;
+      wrapper.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        speedLocked = true;
+      });
+      wrapper.addEventListener('touchmove', (e) => {
+        e.preventDefault(); // Zapobiegaj scrollowi strony
+        const touchX = e.touches[0].clientX;
+        const deltaX = touchX - touchStartX;
+        position += deltaX; // Zwiększona wrażliwość dla lepszego swipe (dostosuj jeśli za szybko)
+        touchStartX = touchX;
+
+        // Ogranicz pozycję do zakresu cyklu, aby uniknąć przeskoków poza granicami
+        position = ((position % config.cycleWidth) + config.cycleWidth) % config.cycleWidth;
+        if (config.direction === 'left' && position > 0) position -= config.cycleWidth;
+
+        carousel.style.transform = `translateX(${position}px)`;
+      });
+      wrapper.addEventListener('touchend', () => {
+        speedLocked = false;
+      });
+
+      // Obsługa resize okna (ponowne asynchroniczne wypełnienie karuzeli)
+      const debouncedResize = debounce(async () => {
+        await fillLogos();
+        // Reset pozycji po resize, aby uniknąć przeskoków
+        position = 0;
+      }, 200);
+      window.addEventListener('resize', debouncedResize);
+
+      // Ładowanie i parsowanie CSV za pomocą PapaParse
+      Papa.parse(config.csvUrl, {
+        download: true, // Pobierz plik zdalnie/lokalnie
+        header: true, // Użyj pierwszej linii jako nagłówki (image, alt)
+        skipEmptyLines: true, // Pomiń puste wiersze
+        dynamicTyping: false, // Traktuj wszystko jako stringi
+        complete: (results) => {
+          console.log('CSV załadowany pomyślnie:', results.data.length, 'wierszy');
+          if (results.errors && results.errors.length > 0) {
+            console.error('Błędy parsowania CSV:', results.errors);
+            return;
+          }
+          // Przetwórz dane: filtruj puste src i stwórz tablicę obiektów
+          config.logos = results.data
+            .map((row) => ({
+              src: row.image?.trim() ? `${config.imageBasePath}${row.image.trim()}` : '', // Dodaj prefiks
+              alt: row.alt?.trim() || 'Logo',
+            }))
+            .filter((item) => item.src && item.src.length > 0); // Usuń puste/inwalidne
+
+          if (config.logos.length === 0) {
+            console.error('Brak ważnych logotypów w CSV. Sprawdź plik.');
+            return;
+          }
+
+          // Inicjalizuj karuzelę po załadowaniu danych (asynchronicznie)
+          fillLogos().then(() => {
+            animate(); // Uruchom animację po pełnym załadowaniu
+            console.log('Karuzela zainicjalizowana z', config.logos.length, 'logotypami.');
+          }).catch((error) => {
+            console.error('Błąd podczas wypełniania karuzeli:', error);
+          });
+        },
+        error: (error, file) => {
+          console.error('Błąd ładowania lub parsowania CSV:', error, file);
+        },
+      });
+
+    })();
   </script>
 </section>
 
@@ -397,7 +521,7 @@ navLinks.forEach(link => {
       }
       const cached = localStorage.getItem('storesData');
       const cacheTime = localStorage.getItem('storesCacheTime');
-      const cacheDuration = 6 * 60 * 60 * 1000; // 6 godzin w milisekundach
+      const cacheDuration = 6 *  60 * 60 * 1000; // 6 godzin w milisekundach
       if (cached && cacheTime && (Date.now() - parseInt(cacheTime) < cacheDuration)) {
         // Cache jest świeży, użyj go
         try {
@@ -412,7 +536,7 @@ navLinks.forEach(link => {
       }
 
       // Jeśli brak cache'u, pobierz CSV
-      const csvPath = 'main/stores.csv';
+      const csvPath = 'main/csv/stores.csv';
 
       // Użyj PapaParse do pobrania i parsowania CSV
       Papa.parse(csvPath, {
