@@ -495,6 +495,7 @@ navLinks.forEach(link => {
   <div class="buy-links"></div>
   <script>
     // Funkcja do ładowania i parsowania CSV
+
     function isValidUrl(string) {
       try {
         const url = new URL(string);
@@ -509,6 +510,18 @@ navLinks.forEach(link => {
       div.textContent = str;
       return div.innerHTML;
     }
+
+    function isValidPathOrUrl(path) {
+      // Sprawdź czy to pełny URL (http/https)
+      try {
+        const url = new URL(path);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+      } catch (_) {
+        // Jeśli nie jest URL-em, traktujemy jako ścieżkę względną/absolutną
+        return typeof path === 'string' && path.trim().length > 0;
+      }
+    }
+
 
     function loadStoresFromCSV() {
       if (typeof Papa === 'undefined') {
@@ -578,13 +591,15 @@ navLinks.forEach(link => {
         return;
       }
       buyLinks.innerHTML = '';
-      
-      // Dla każdej linii CSV utwórz element HTML
+
+
+      const imageBasePath = 'main/img/'; // <-- stały katalog dla obrazków
       let validRows = 0;
       data.forEach(function(row) {
         const sanitizedLink = sanitizeString(row.link);
         const sanitizedImage = sanitizeString(row.image);
-        if (row.image && row.link && isValidUrl(row.link) && isValidUrl(row.image) && isValidUrl(sanitizedLink) && isValidUrl(sanitizedImage)) {
+        
+        if (row.image && row.link && isValidUrl(row.link)) {
           validRows++;
           const span = document.createElement('span');
           span.className = 'container';
@@ -596,7 +611,7 @@ navLinks.forEach(link => {
           a.setAttribute('aria-label', `Przejdź do sklepu ${row.alt || row.link}`);
 
           const img = document.createElement('img');
-          img.src = sanitizedImage;
+          img.src = isValidUrl(sanitizedImage) ? sanitizedImage : imageBasePath + sanitizedImage;
           img.alt = row.alt || `Logo sklepu ${row.link}`; //  Domyślny alt jeśli brak zdjęcia
           img.setAttribute('loading', 'lazy'); 
           img.setAttribute('aria-hidden', 'true');
@@ -623,7 +638,7 @@ navLinks.forEach(link => {
     <div class="contact">
         <h4>Kontakt</h4>
         <p><i class="fa fa-envelope" aria-hidden="true" title="Adres email"></i>Email: <a href="mailto:bspolska@bspolska.com.pl">bspolska@bspolska.com.pl</a></p>
-        <p><i class="fa fa-phone" aria-hidden="true" title="numer telefonu"></i>Telefon: <a href="tel:+48530288284">530 288 284</a></p>
+        <p><i class="fa fa-phone" aria-hidden="true" title="numer telefonu"></i>Tel/sms: <a href="tel:+48530288284">530 288 284</a></p>
     </div>
     <div class="address">
         <h4>Adres</h4>
