@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B&S Polska produkty</title>
     <link rel="stylesheet" href="css/brand.css">
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
 
@@ -25,7 +26,6 @@
     <!-- Produkty z CSV -->
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <script>
 let products;
 let activeCategory;
@@ -37,7 +37,7 @@ function getBrandFromQuery() {
 }
 
 function csvPathForBrand(brand) {
-  return `brand/brand_${brand}.csv`; // np. brand_LegiaWarszawa.csv
+  return `brand/brand_${brand}.csv`; // np. brand_Legia-Warszawa.csv
 }
 
 async function loadProducts() {
@@ -113,7 +113,7 @@ function render() {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-                <img src="img/Legia/${p.brandPage}/${p.image}" alt="${p.name}" class="product-image">
+                <img src="img/${p.brand}/${p.image}" alt="${p.name}" class="product-image">
                 <div class="product-info">
                     <div class="product-name">${p.name}</div>
                     <div class="product-BarCode">${p.BarCode}</div>
@@ -137,7 +137,6 @@ function render() {
 
 document.getElementById('search').addEventListener('input', render);
 
-if (!products) loadProducts();
 </script>
 
 </body>
