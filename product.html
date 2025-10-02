@@ -48,7 +48,7 @@
 
         // Dynamiczne wyświetlanie dostępnych zdjęć
 
-        const imageBasePath = `img/`;
+        const imageBasePath = `img/${product.brand}/`;
 
         const images = [
           product.image, product.image2, product.image3,
@@ -92,7 +92,7 @@
         // Render
         document.getElementById('productDetails').innerHTML = `
           <div class="header">
-            <a href="brand.html?brand=${product.brandPage || 'index.html'}" class="back-link">← Powrót do listy ${product.brand}</a>
+            <a href="brand.html?brand=${product.brandPage || 'index.html'}" class="back-link">← Powrót do listy produktów ${product.brand}</a>
           </div>
 
           <main class="product-page">
@@ -129,7 +129,7 @@
                       <p>Waga produktu: ${product.weight} g</p>
                       <p>Materiał: ${product.material}</p>
                       <p>Kolor dominujący: ${product.color}</p>
-                      <p>Kod kreskowy produktu: ${product.BarCode}</p>
+                      <p>EAN (GTIN) produktu: ${product.BarCode}</p>
                   </div>
                 </div>
               </div>
