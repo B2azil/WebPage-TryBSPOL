@@ -1,3 +1,4 @@
 # Ignoruj wszystko w folderze logs, ale zachowaj folder
+img/*
 
 *zachowany skrypt
