@@ -6,7 +6,6 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Szczegóły produktu</title>
   <link rel="stylesheet" href="css/product.css">
-  <link rel="stylesheet" href="https://unpkg.com/photoswipe@5/dist/photoswipe.css" />
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="script.js"></script> <!-- Accordion -->
 </head>
@@ -19,14 +18,21 @@
     async function loadProductDetails() {
       const params = new URLSearchParams(window.location.search);
       const prodId = params.get('id');
+      const brand = params.get('brand'); 
 
       if (!prodId) {
         document.getElementById('productDetails').innerHTML = '<p>Nie podano produktu.</p>';
         return;
       }
 
+      // Jeśli w URL nie ma parametru brand, spróbuj odczytać z nazwy pliku (fallback)
+      const csvPath = brand
+        ? `brand/brand_${brand}.csv`
+        : await detectBrandCSV();
+
       try {
-        const response = await fetch('brand/brand_Legia-Warszawa.csv');
+        const response = await fetch(csvPath);
+        if (!response.ok) throw new Error(`Nie udało się pobrać ${csvPath}`);
         const data = await response.text();
 
         const results = Papa.parse(data, {
@@ -169,6 +175,17 @@
       catch (error) {
         document.getElementById('productDetails').innerHTML = '<p>Błąd podczas ładowania danych produktu.</p>';
         console.error('Błąd ładowania CSV:', error);
+      }
+    }
+
+    async function detectBrandCSV() {
+      try {
+        const response = await fetch('brand/');
+        const html = await response.text();
+        const match = html.match(/brand_[\w-]+\.csv/);
+        return match ? `brand/${match[0]}` : 'brand/brand_default.csv';
+      } catch {
+        return 'brand/brand_default.csv';
       }
     }
 

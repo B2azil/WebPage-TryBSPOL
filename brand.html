@@ -128,7 +128,9 @@ function render() {
             `;
             
             card.addEventListener('click', function() {
-                window.location.href = 'product.html?id=' + encodeURIComponent(p.name);
+                const currentBrand = new URLSearchParams(window.location.search).get('brand');
+                const link = `product.html?id=${encodeURIComponent(p.name)}&brand=${encodeURIComponent(currentBrand)}`;
+                window.location.href = link;
             });
             
             productList.appendChild(card);

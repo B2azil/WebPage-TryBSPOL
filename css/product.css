@@ -6,7 +6,7 @@ body {
 }
 
 .product-container { 
-  max-width: 1200px; 
+  max-width: 70rem; 
   margin: auto; 
   background: #fff; 
   padding: 25px 35px; 
@@ -47,8 +47,8 @@ a.back-link:hover { text-decoration: underline; }
 }
 
 .thumb-box {
-  width: 70px;
-  height: 90px;
+  width: 5rem;
+  height: 7rem;
   border: 1px solid #ddd;
   display: flex;
   align-items: center;
@@ -71,9 +71,9 @@ a.back-link:hover { text-decoration: underline; }
 
 /* Duże zdjęcie */
 .main-image .image-box {
-  width: 500px;
-  height: 600px;
-  border: 1px solid #ddd;
+  width: 27.5rem;
+  height: 38rem;
+  border: 0.01rem solid #ddd;
   overflow: hidden;
   position: relative;
 }
