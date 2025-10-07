@@ -1,36 +1,41 @@
-body { 
+/* Global Styles */
+body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: #f2f2f2; 
-  margin: 30px; 
+  margin: 5vh;
   color: #333; 
 }
 
-.product-container { 
-  max-width: 70rem; 
-  margin: auto; 
+/* Container Styles */
+.product-container {
+  max-width: 90%;
+  margin: auto;
   background: #fff; 
   padding: 25px 35px; 
   border-radius: 15px; 
   box-shadow: 0 3px 20px rgb(0 0 0 / 0.1); 
 }
 
-a.back-link { 
-  display: inline-block; 
-  margin-top: 25px; 
-  text-decoration: none; 
+/* Link Styles */
+a.back-link {
+  display: inline-block;
+  margin-top: 25px;
+  text-decoration: none;
   color: #2980b9; 
-  font-weight: bold; 
+  font-weight: bold;
 }
-a.back-link:hover { text-decoration: underline; }
+a.back-link:hover {
+  text-decoration: underline;
+}
 
-/* Layout */
+/* Layout Styles */
 .product-page {
   display: flex;
   gap: 2rem;
   align-items: flex-start;
 }
 
-/* Galeria sticky */
+/* Gallery Styles */
 .gallery {
   display: flex;
   gap: 1rem;
@@ -39,7 +44,6 @@ a.back-link:hover { text-decoration: underline; }
   align-self: flex-start;
 }
 
-/* Miniatury pionowe */
 .thumbnails {
   display: flex;
   flex-direction: column;
@@ -47,8 +51,9 @@ a.back-link:hover { text-decoration: underline; }
 }
 
 .thumb-box {
-  width: 5rem;
-  height: 7rem;
+  aspect-ratio: 5 / 7;
+  width: auto;
+  height: clamp(5rem, 2vw + 5rem, 30rem);
   border: 1px solid #ddd;
   display: flex;
   align-items: center;
@@ -67,15 +72,19 @@ a.back-link:hover { text-decoration: underline; }
 .thumb-box:hover img {
   transform: scale(1.05);
 }
-.thumb-box.active { border: 2px solid #2980b9; }
 
-/* Duże zdjęcie */
+.thumb-box.active {
+  border: 2px solid #2980b9;;
+}
+
 .main-image .image-box {
-  width: 27.5rem;
-  height: 38rem;
-  border: 0.01rem solid #ddd;
+  aspect-ratio: 5 / 7;
+  width: auto;
+  height: clamp(25rem, 25vw + 15rem, 100rem);
+  border: 0.1rem solid #ddd;
   overflow: hidden;
   position: relative;
+  cursor: pointer;
 }
 
 .main-image img {
@@ -85,27 +94,71 @@ a.back-link:hover { text-decoration: underline; }
   transition: transform 0.3s ease;
 }
 
-/* Prawa kolumna */
+/* Full-Screen Image Styles */
+.fullscreen-image {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.fullscreen-image img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.fullscreen-image .close-button {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  color: #fff;
+  font-size: clamp(3rem, 2vw + 2rem, 8rem);
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* Product Details Styles */
 .product-details {
   flex: 1;
+  order: 0; /* Ensure product details appear after gallery on desktop */
 }
+
 .product-details .h1 {
   font-size: 1.8rem;
   margin: 0;
   font-weight: 600;
 }
+
 .sku {
   font-size: 0.8rem;
   color: #999;
   display: block;
   margin-top: 0.5rem;
 }
+
 .price {
-  font-size: 1.3em; 
-  font-weight: bold; 
+  font-size: 1.3em;
+  font-weight: bold;
   color: #e67e22; 
   margin: 1.3em 0;
 }
+
+.brand {
+  margin: 1rem 0;
+}
+
+.category {
+  margin: 0.5rem 0;
+}
+
 /* Accordion Styles */
 .accordion {
     border-top: 1px solid #eee;
@@ -146,8 +199,55 @@ a.back-link:hover { text-decoration: underline; }
   line-height: 1.4; /* opcjonalnie ciaśniejszy odstęp między liniami */
 }
 
-
+/* Header Styles */
 .header {
   margin-bottom: 1rem;
-  /* padding-bottom: 1rem; */
+}
+
+/* Responsive Styles for Small Screens */
+@media (max-width: 850px) {
+  body {
+    margin: 1vh;
+  }
+
+  .product-container {
+    padding: 1.5rem;
+    max-width: 70rem;
+  }
+
+  .product-page {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .gallery {
+    position: static;
+    flex-direction: column-reverse; /* Reverse order: main image on top, thumbnails below */
+    width: 100%;
+    order: 0; /* Gallery on top for mobile */
+  }
+
+  .thumbnails {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+    gap: 0.5rem;
+  }
+
+  .thumb-box {
+    width: 4rem;
+    height: 5rem;
+    flex-shrink: 0;
+  }
+
+  .main-image .image-box {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .product-details {
+    width: 100%;
+    order: 1; /* Product details below gallery on mobile */
+  }
 }

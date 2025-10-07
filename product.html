@@ -13,74 +13,73 @@
   <div class="product-container" id="productDetails">
     <p>Ładowanie danych produktu...</p>
   </div>
-  
-  <script type="module">
-    async function loadProductDetails() {
-      const params = new URLSearchParams(window.location.search);
-      const prodId = params.get('id');
-      const brand = params.get('brand'); 
 
-      if (!prodId) {
-        document.getElementById('productDetails').innerHTML = '<p>Nie podano produktu.</p>';
-        return;
-      }
+<script type="module">
+  async function loadProductDetails() {
+    const params = new URLSearchParams(window.location.search);
+    const prodId = params.get('id');
+    const brand = params.get('brand');
+
+    if (!prodId) {
+      document.getElementById('productDetails').innerHTML = '<p>Nie podano produktu.</p>';
+      return;
+    }
 
       // Jeśli w URL nie ma parametru brand, spróbuj odczytać z nazwy pliku (fallback)
       const csvPath = brand
         ? `brand/brand_${brand}.csv`
         : await detectBrandCSV();
 
-      try {
-        const response = await fetch(csvPath);
-        if (!response.ok) throw new Error(`Nie udało się pobrać ${csvPath}`);
-        const data = await response.text();
+    try {
+      const response = await fetch(csvPath);
+      if (!response.ok) throw new Error(`Nie udało się pobrać ${csvPath}`);
+      const data = await response.text();
 
-        const results = Papa.parse(data, {
-          header: true,
-          skipEmptyLines: true,
-          dynamicTyping: false,
+      const results = Papa.parse(data, {
+        header: true,
+        skipEmptyLines: true,
+        dynamicTyping: false,
           delimiter: ';'  // ustaw separator na średnik
-        });
-        const products = results.data;
+      });
+      const products = results.data;
 
         // Odnajdź produkt po nazwie (prodId jest w URL zakodowane, więc dekoduj)
-        const decodedProdId = decodeURIComponent(prodId);
-        const product = products.find(p => p.name === decodedProdId);
+      const decodedProdId = decodeURIComponent(prodId);
+      const product = products.find(p => p.name === decodedProdId);
 
-        if (!product) {
-          document.getElementById('productDetails').innerHTML = '<p>Produkt nie znaleziony.</p>';
-          return;
-        }
+      if (!product) {
+        document.getElementById('productDetails').innerHTML = '<p>Produkt nie znaleziony.</p>';
+        return;
+      }
 
         // Dynamiczne wyświetlanie dostępnych zdjęć
 
-        const imageBasePath = `img/${product.brand}/`;
-
-        const images = [
-          product.image, product.image2, product.image3,
-          product.image4, product.image5, product.image6,
-          product.image7, product.image8
+      const imageBasePath = `img/${product.brand}/`;
+      const images = [
+        product.image, product.image2, product.image3,
+        product.image4, product.image5, product.image6,
+        product.image7, product.image8
         ].filter(src => src && src.trim() !== '')
           .map(src => imageBasePath + src);;
-        
+
 
         // Galeria
-        const galleryHtml = `
-          <div class="gallery">
-            <div class="thumbnails">
-              ${images.map((src, i) => `
-                <div class="thumb-box">
-                  <img src="${src}" data-index="${i}" alt="${product.name} miniatura" loading="lazy">
-                </div>
-              `).join('')}
-            </div>
-            <div class="main-image">
-              <div class="image-box">
-                <img id="currentImage" src="${images[0]}" alt="${product.name}">
+      const galleryHtml = `
+        <div class="gallery">
+          <div class="thumbnails">
+            ${images.map((src, i) => `
+              <div class="thumb-box">
+                <img src="${src}" data-index="${i}" alt="${product.name} miniatura" loading="lazy">
               </div>
+            `).join('')}
+          </div>
+          <div class="main-image">
+            <div class="image-box">
+              <img id="currentImage" src="${images[0]}" alt="${product.name}">
             </div>
           </div>
-        `;
+        </div>
+      `;
 
         // Opis
         const infoFields = [
@@ -96,26 +95,23 @@
           .join('');
 
         // Render
-        document.getElementById('productDetails').innerHTML = `
-          <div class="header">
-            <a href="brand.html?brand=${product.brandPage || 'index.html'}" class="back-link">← Powrót do listy produktów ${product.brand}</a>
-          </div>
-
-          <main class="product-page">
-            ${galleryHtml}
-
-            <section class="product-details">
-              <h1 class="h1">${product.name}</h1>
-              <span class="sku">SKU: ${product.sku}</span>
-              <div class="category">Kategoria: ${product.category}</div>
-              <div class="price">Cena rekomendowana: ${product.price} zł</div>
-
-              <div>
-                <div class="brand">Marka: ${product.brand}</div>
-                <h3> Produkt dostępny w naszym sklepie: </h3>
-                <a href="${product.link}" target="_blank" class="link">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro">
-                </a>
+      document.getElementById('productDetails').innerHTML = `
+        <div class="header">
+          <a href="brand.html?brand=${product.brandPage || 'index.html'}" class="back-link">← Powrót do listy produktów marki ${product.brand}</a>
+        </div>
+        <main class="product-page">
+          ${galleryHtml}
+          <section class="product-details">
+            <h1 class="h1">${product.name}</h1>
+            <span class="sku">SKU: ${product.sku}</span>
+            <div class="category">Kategoria: ${product.category}</div>
+            <div class="price">Cena rekomendowana: ${product.price} zł</div>
+            <div>
+              <div class="brand">Marka: ${product.brand}</div>
+              <h3>Produkt dostępny w naszym sklepie:</h3>
+              <a href="${product.link}" target="_blank" class="link">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro">
+              </a>
               </div>  
 
               <div class="accordion">
@@ -138,60 +134,146 @@
                       <p>EAN (GTIN) produktu: ${product.BarCode}</p>
                   </div>
                 </div>
-              </div>
-            </section>
-          </main>
-        `;
+            </div>  
+          </section>
+        </main>
+      `;
 
         // --- JS obsługa galerii ---
-        const thumbs = document.querySelectorAll('.thumb-box img');
-        const thumbBoxes = document.querySelectorAll('.thumb-box');
-        const currentImg = document.getElementById('currentImage');
+      const thumbs = document.querySelectorAll('.thumb-box img');
+      const thumbBoxes = document.querySelectorAll('.thumb-box');
+      const currentImg = document.getElementById('currentImage');
+      let currentIndex = 0;
 
-        thumbs.forEach((thumb, i) => {
-          thumb.addEventListener('mouseenter', () => {
-            currentImg.src = thumb.src;
-            thumbBoxes.forEach(b => b.classList.remove('active'));
-            thumbBoxes[i].classList.add('active');
-          });
-        });
-        thumbBoxes[0]?.classList.add('active');
-
-        // Zoom efekt (lupa)
-        const imageBox = document.querySelector('.main-image .image-box');
-        imageBox.addEventListener('mousemove', (e) => {
-          const rect = imageBox.getBoundingClientRect();
-          const x = ((e.clientX - rect.left) / rect.width) * 100;
-          const y = ((e.clientY - rect.top) / rect.height) * 100;
-          currentImg.style.transformOrigin = `${x}% ${y}%`;
-          currentImg.style.transform = "scale(2)";
-        });
-        imageBox.addEventListener('mouseleave', () => {
-          currentImg.style.transform = "scale(1)";
-          currentImg.style.transformOrigin = "center center";
-        });
-
-      } 
-      catch (error) {
-        document.getElementById('productDetails').innerHTML = '<p>Błąd podczas ładowania danych produktu.</p>';
-        console.error('Błąd ładowania CSV:', error);
+      function updateImage(index) {
+        currentImg.src = images[index];
+        thumbBoxes.forEach(b => b.classList.remove('active'));
+        thumbBoxes[index].classList.add('active');
+        currentIndex = index;
       }
-    }
 
-    async function detectBrandCSV() {
-      try {
-        const response = await fetch('brand/');
-        const html = await response.text();
-        const match = html.match(/brand_[\w-]+\.csv/);
-        return match ? `brand/${match[0]}` : 'brand/brand_default.csv';
-      } catch {
-        return 'brand/brand_default.csv';
+      thumbs.forEach((thumb, i) => {
+        thumb.addEventListener('mouseenter', () => updateImage(i));
+      });
+      thumbBoxes[0]?.classList.add('active');
+
+      // Zoom Effect
+      const imageBox = document.querySelector('.main-image .image-box');
+      imageBox.addEventListener('mousemove', (e) => {
+        const rect = imageBox.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        currentImg.style.transformOrigin = `${x}% ${y}%`;
+        currentImg.style.transform = "scale(2)";
+      });
+      imageBox.addEventListener('mouseleave', () => {
+        currentImg.style.transform = "scale(1)";
+        currentImg.style.transformOrigin = "center center";
+      });
+
+      // Full-Screen Image
+      function openFullscreen() {
+        const fullscreenDiv = document.createElement('div');
+        fullscreenDiv.className = 'fullscreen-image';
+        fullscreenDiv.innerHTML = `
+          <img src="${images[currentIndex]}" alt="${product.name}">
+          <button class="close-button">×</button>
+        `;
+        document.body.appendChild(fullscreenDiv);
+
+        const fullscreenImg = fullscreenDiv.querySelector('img');
+        const closeButton = fullscreenDiv.querySelector('.close-button');
+
+        // Update image in full-screen mode
+        function updateFullscreenImage(index) {
+          currentIndex = index;
+          fullscreenImg.src = images[currentIndex];
+          thumbBoxes.forEach(b => b.classList.remove('active'));
+          thumbBoxes[currentIndex].classList.add('active');
+          currentImg.src = images[currentIndex];
+        }
+
+        // Arrow key navigation
+        function handleKeyNavigation(e) {
+          if (e.key === 'ArrowLeft' && currentIndex > 0) {
+            updateFullscreenImage(currentIndex - 1);
+          } else if (e.key === 'ArrowRight' && currentIndex < images.length - 1) {
+            updateFullscreenImage(currentIndex + 1);
+          }
+        }
+
+        // Swipe navigation
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        fullscreenDiv.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+        });
+
+        fullscreenDiv.addEventListener('touchend', (e) => {
+          touchEndX = e.changedTouches[0].screenX;
+          const swipeDistance = touchEndX - touchStartX;
+          if (Math.abs(swipeDistance) > 50) {
+            if (swipeDistance > 0 && currentIndex > 0) {
+              updateFullscreenImage(currentIndex - 1);
+            } else if (swipeDistance < 0 && currentIndex < images.length - 1) {
+              updateFullscreenImage(currentIndex + 1);
+            }
+          }
+        });
+
+        // Close on click outside image or close button
+        fullscreenDiv.addEventListener('click', (e) => {
+          if (e.target === fullscreenDiv || e.target === closeButton) {
+            fullscreenDiv.remove();
+            document.removeEventListener('keydown', handleKeyNavigation);
+          }
+        });
+
+        // Add keydown listener for arrow keys
+        document.addEventListener('keydown', handleKeyNavigation);
       }
+
+      imageBox.addEventListener('click', openFullscreen);
+
+      // Swipe Gestures for Main Image
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      imageBox.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+
+      imageBox.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        const swipeDistance = touchEndX - touchStartX;
+        if (Math.abs(swipeDistance) > 50) {
+          if (swipeDistance > 0 && currentIndex > 0) {
+            updateImage(currentIndex - 1);
+          } else if (swipeDistance < 0 && currentIndex < images.length - 1) {
+            updateImage(currentIndex + 1);
+          }
+        }
+      });
+
+    } catch (error) {
+      document.getElementById('productDetails').innerHTML = '<p>Błąd podczas ładowania danych produktu.</p>';
+      console.error('Błąd ładowania CSV:', error);
     }
+  }
 
-    loadProductDetails();
-  </script>
+  async function detectBrandCSV() {
+    try {
+      const response = await fetch('brand/');
+      const html = await response.text();
+      const match = html.match(/brand_[\w-]+\.csv/);
+      return match ? `brand/${match[0]}` : 'brand/brand_default.csv';
+    } catch {
+      return 'brand/brand_default.csv';
+    }
+  }
 
-  
+  loadProductDetails();
+</script>
 </body>
 </html>
