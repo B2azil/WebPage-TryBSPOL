@@ -80,7 +80,8 @@ a.back-link:hover {
 .main-image .image-box {
   aspect-ratio: 5 / 7;
   width: auto;
-  height: clamp(25rem, 25vw + 15rem, 100rem);
+  height: clamp(25rem, 50vw + 25rem, 120rem);
+  max-height: 85vh;
   border: 0.1rem solid #ddd;
   overflow: hidden;
   position: relative;
