@@ -74,25 +74,29 @@ a.back-link:hover {
 }
 
 .thumb-box.active {
-  border: 2px solid #2980b9;;
+  border: 2px solid #2980b9;
 }
 
 .main-image .image-box {
   aspect-ratio: 5 / 7;
-  width: auto;
-  height: clamp(25rem, 50vw + 25rem, 120rem);
+  height: clamp(20rem, 25rem + 8vh, 40rem);
   max-height: 85vh;
   border: 0.1rem solid #ddd;
   overflow: hidden;
   position: relative;
   cursor: pointer;
 }
-
+@media (min-width: 1200px) {
+    .main-image .image-box {
+      height: clamp(25rem, 45rem + 5vh, 50rem);
+  }
+}
 .main-image img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   transition: transform 0.3s ease;
+  will-change: transform;
 }
 
 /* Full-Screen Image Styles */
@@ -102,7 +106,7 @@ a.back-link:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.86);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,13 +130,47 @@ a.back-link:hover {
   border: none;
 }
 
+/* Navigation Arrows for Fullscreen */
+.fullscreen-image .nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #fff;
+  font-size: clamp(2rem, 3vw + 1rem, 5rem);
+  cursor: pointer;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  transition: background 0.3s;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.fullscreen-image:hover .nav-arrow {
+  opacity: 1;
+  visibility: visible;
+}
+
+.fullscreen-image .nav-arrow.prev {
+  left: 1rem;
+}
+
+.fullscreen-image .nav-arrow.next {
+  right: 1rem;
+}
+
+.fullscreen-image .nav-arrow:hover {
+  color: #ffffff70;
+  border: none;
+  background: none;
+}
+
 /* Product Details Styles */
 .product-details {
   flex: 1;
-  order: 0; /* Ensure product details appear after gallery on desktop */
 }
 
-.product-details .h1 {
+.product-details .name {
   font-size: 1.8rem;
   margin: 0;
   font-weight: 600;
@@ -196,7 +234,7 @@ a.back-link:hover {
 }
 
 .accordion-content p {
-  margin: 0.4rem 0;   /* górny i dolny margines 4px zamiast np. 16px */
+  margin: clamp(0.4rem, 0.6vw, 1rem);   /* górny i dolny margines 4px zamiast np. 16px */
   line-height: 1.4; /* opcjonalnie ciaśniejszy odstęp między liniami */
 }
 
@@ -243,12 +281,128 @@ a.back-link:hover {
 
   .main-image .image-box {
     width: 100%;
-    height: auto;
+    height: 100%;
+    /* zastanów się późnej ratio czy object-fit */
     aspect-ratio: 4 / 3;
+    /* object-fit: cover; */
   }
 
   .product-details {
     width: 100%;
     order: 1; /* Product details below gallery on mobile */
   }
+
+  /* Hide arrows on mobile (rely on swipe gestures) */
+  .fullscreen-image .nav-arrow {
+    display: none;
+  }
 }
+
+
+/* ====== Large desktop & HiDPI tuning (>= 1440px) ====== */
+@media (min-width: 1440px) {
+  /* Global spacing: zmniejsz "rozlewanie" na ogromnych viewportach */
+  body {
+    margin: clamp(16px, 2cqh, 32px);
+  }
+
+  .product-container {
+    /* miękki max-width i twardy limit */
+    max-width: min(1400px, 92vw);
+    padding: clamp(24px, 1.8cqh, 40px) clamp(28px, 2cqw, 48px);
+  }
+
+  /* Galeria przyklejona, ale w bezpiecznych granicach */
+  .gallery {
+    position: sticky;
+    top: clamp(16px, 1.5cqh, 32px);
+    align-self: start;
+  }
+
+  /* Kolumna miniatur: rozsądna wysokość i przewijanie przy nadmiarze */
+  .thumbnails {
+    gap: clamp(8px, 0.8cqh, 14px);
+    max-height: min(72vh, 980px);
+    overflow: auto;
+    scrollbar-gutter: stable;
+  }
+
+  .thumb-box {
+    /* zwiększone, ale kontrolowane miniatury */
+    height: clamp(96px, 6cqh, 180px);
+    border-width: 1px;
+  }
+
+  .thumb-box.active {
+    border-width: 2px;
+  }
+
+  /* Główne zdjęcie: duże, ale nie „bez końca” */
+  .main-image .image-box {
+    /* utrzymaj portretowy ratio, ale nie przekraczaj okna */
+    aspect-ratio: 5 / 7;
+    height: clamp(40vh, 70vh, 90vh);
+    width: auto;
+    border-width: 1px;
+  }
+
+  .main-image img {
+    transition: transform 0.25s ease;
+    /* delikatnie ostrzejsze na HiDPI */
+    image-rendering: crisp-edges;
+  }
+
+  /* Typografia w szczegółach produktu */
+  .product-details .name {
+    font-size: clamp(1.8rem, 1.2rem + 1.2cqw, 2.6rem);
+    line-height: 1.2;
+    margin-bottom: 0.4rem;
+  }
+
+  .sku {
+    font-size: clamp(0.85rem, 0.75rem + 0.3cqw, 1rem);
+  }
+
+  .price {
+    font-size: clamp(1.2rem, 1rem + 0.8cqw, 1.8rem);
+    margin: clamp(16px, 1.2cqh, 28px) 0;
+  }
+
+  .brand,
+  .category {
+    font-size: clamp(1rem, 0.9rem + 0.4cqw, 1.2rem);
+  }
+
+  /* Accordion – większe klik-zony na dużych ekranach */
+  .accordion {
+    margin: clamp(20px, 1.6cqh, 32px) 0;
+  }
+
+  .accordion-header {
+    padding: clamp(12px, 1cqh, 18px) 0;
+    font-size: clamp(1rem, 0.95rem + 0.5cqw, 1.25rem);
+  }
+  
+  .accordion-content p {
+    line-height: 1.5;
+    margin: clamp(6px, 0.6cqh, 10px) 0;
+  }
+}
+
+/* ====== Ultra-wide tuning (>= 1920px) ====== */
+@media (min-width: 1920px) {
+  .product-container {
+    max-width: min(1600px, 88vw);
+  }
+  .product-page {
+    gap: clamp(28px, 2.2cqw, 56px);
+  }
+  .main-image .image-box {
+    height: min(80vh, 1200px);
+    max-height: min(80vh, 1200px);
+  }
+  .thumbnails {
+    max-height: min(74vh, 1100px);
+  }
+}
+
