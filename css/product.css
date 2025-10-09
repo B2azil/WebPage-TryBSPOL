@@ -194,6 +194,33 @@ a.back-link:hover {
   margin: 1rem 0;
 }
 
+.logo-sale img{
+  /* display: flex; */
+  /* gap: 2rem; */
+  align-items: center;
+  margin: 0.5rem 0.3rem;
+  max-height: 1.5rem;
+}
+
+
+.shop-logo {
+  margin: 0.5rem 0.3rem;
+  max-height: 1.5rem;
+}
+.brand img{
+  margin: 0.5rem 0.3rem;
+  max-height: 1.5rem;
+}
+.logo-sale h4{
+  margin: 0.5rem 0.3rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.club img{
+  max-height: 3rem;
+}
+
 .category {
   margin: 0.5rem 0;
 }

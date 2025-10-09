@@ -203,6 +203,7 @@ footer .contact,
 footer .address {
   margin-bottom: 20px;
   min-width: 200px;
+  color: rgb(204, 204, 204)
 }
 
 footer h4 {

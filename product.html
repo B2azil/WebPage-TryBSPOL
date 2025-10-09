@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/product.css">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="script.js"></script> <!-- Accordion -->
+  <script src="script/Accordion.js"></script> <!-- Accordion -->
 </head>
 <body>
   <div class="product-container" id="productDetails">
@@ -82,23 +82,42 @@
         </div>
       `;
 
-        // Opis
-        const infoFields = [
-          'info1','info2','info3','info4',
-          'info5','info6','info7','info8',
-          'info9','info10','info11','info12',
-          'info13','info14','info15'
+      // Opis
+      const infoFields = [
+        'info1','info2','info3','info4',
+        'info5','info6','info7','info8',
+        'info9','info10','info11','info12',
+        'info13','info14','info15'
+      ];
+      const infosHtml = infoFields
+        .map(field => product[field])
+        .filter(text => text && text.trim() !== '')
+        .map(text => `<p class="description">- ${text}</p>`)
+        .join('');
+
+
+        
+        // Tablica logo sklepów (stała dla wszystkich produktów)
+        const shops = [
+          { src: 'https://erli.pl/sprzedawcy/assets/images/logo-shop.svg', alt: 'erli', link: 'https://erli.pl/sklep/BandSPolska/33689'},
+          { src: 'https://upload.wikimedia.org/wikipedia/commons/4/40/Kaufland_2016_horizontal.svg', alt: 'kaufland', link: 'https://www.kaufland.pl/shops/BandSPolska/'},
+          { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Empik.svg/330px-Empik.svg.png', alt: 'empik', link: 'https://www.empik.com/sklepy/b-s-polska,3078,m'},
+          { src: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/OLX_2019.svg', alt: 'OLX', link: 'https://www.olx.pl/oferty/uzytkownik/1PcRlD/'},
+          { src: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg', alt: 'amazon', link: 'https://www.amazon.pl/s?me=A10IUM9O23CD0Y&marketplaceID=A1C3SOZRARQ6R3'},
+          { src: 'https://arena.pl/dist/img/logo-arena.svg', alt: 'arena', link: 'https://arena.pl/sprzedawca/b_and_s_polska/sklep'},
+          // Dodaj więcej
         ];
-        const infosHtml = infoFields
-          .map(field => product[field])
-          .filter(text => text && text.trim() !== '')
-          .map(text => `<p class="description">- ${text}</p>`)
-          .join('');
+        
+        const logosHtml = shops.map(shop => `
+          <a href="${shop.link}" target="_blank">
+            <img src="main/img/${shop.src}" alt="${shop.alt}" class="shop-logo">
+          </a>
+        `).join('');
 
         // Render
       document.getElementById('productDetails').innerHTML = `
         <div class="header">
-          <a href="brand.html?brand=${product.brandPage || 'index.html'}" class="back-link">← Powrót do listy produktów marki ${product.brand}</a>
+          <a href="brand.html?brand=${product.brandPage || 'index.html'}" class="back-link"><i class="fa fa-long-arrow-left"></i> Powrót do listy produktów marki ${product.brand}</a>
         </div>
         <main class="product-page">
           ${galleryHtml}
@@ -109,32 +128,33 @@
             <div class="price">Cena rekomendowana: ${product.price} zł</div>
             <div>
               <div class="brand">Marka: ${product.brand}</div>
-              <h3>Produkt dostępny w naszym sklepie:</h3>
-              <a href="${product.link}" target="_blank" class="link">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro">
-              </a>
-              </div>  
-
-              <div class="accordion">
-                <div class="accordion-item">
-                  <button class="accordion-header">Opis produktu</button>
-                  <div class="accordion-content">
-                      ${infosHtml}
-                  </div>
+              <h3>Produkt dostępny w sklepie:</h3>
+              <a href="${product.link}" target="_blank" class="link"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro"></a>
+                oraz może być dostępny w <a class="club" href="${product.fanstoreLink}" target="_blank" class="link"><img src="${product.logoClub}" alt="fanstore" loading="lazy"></a>
+              <div class="logo-sale">
+                <h4>oraz można znaleźć w</h4>${logosHtml}
+              </div>
+            </div>
+            <div class="accordion">
+              <div class="accordion-item">
+                <button class="accordion-header">Opis produktu</button>
+                <div class="accordion-content">
+                    ${infosHtml}
                 </div>
+              </div>
 
-                <div class="accordion-item">
-                  <button class="accordion-header">Specyfikacja techniczna produktu</button>
-                  <div class="accordion-content">
-                      <p>Wysokość: ${product.height} cm</p>
-                      <p>Szerokość: ${product.width} cm</p>
-                      <p>Głębokość: ${product.depth} cm</p>
-                      <p>Waga produktu: ${product.weight} g</p>
-                      <p>Materiał: ${product.material}</p>
-                      <p>Kolor dominujący: ${product.color}</p>
-                      <p>EAN (GTIN) produktu: ${product.BarCode}</p>
-                  </div>
+              <div class="accordion-item">
+                <button class="accordion-header">Specyfikacja techniczna produktu</button>
+                <div class="accordion-content">
+                    <p>Wysokość: ${product.height} cm</p>
+                    <p>Szerokość: ${product.width} cm</p>
+                    <p>Głębokość: ${product.depth} cm</p>
+                    <p>Waga produktu: ${product.weight} g</p>
+                    <p>Materiał: ${product.material}</p>
+                    <p>Kolor dominujący: ${product.color}</p>
+                    <p>EAN (GTIN) produktu: ${product.BarCode}</p>
                 </div>
+              </div>
             </div>  
           </section>
         </main>
@@ -290,6 +310,8 @@
   }
 
   loadProductDetails();
+
+  
 </script>
 </body>
 </html>
