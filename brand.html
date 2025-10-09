@@ -113,7 +113,7 @@ function render() {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-                <img src="img/${p.brand}/${p.image}" alt="${p.name}" class="product-image">
+                <img src="img/${p.brand}/${p.image}" alt="${p.name}" class="product-image" loading="lazy">
                 <div class="product-info">
                     <div class="product-name">${p.name}</div>
                     <div class="product-BarCode">${p.BarCode}</div>
@@ -137,7 +137,15 @@ function render() {
         });
 }
 
-document.getElementById('search').addEventListener('input', render);
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+document.getElementById('search').addEventListener('input', debounce(render, 300));
 
 </script>
 
