@@ -52,7 +52,8 @@ async function loadProducts() {
     const results = Papa.parse(data, {
       header: true,
       skipEmptyLines: true,
-      dynamicTyping: false
+      dynamicTyping: false,
+        delimiter: ";", // ustaw separator na średnik
     });
     products = results.data;
     generateCategories();
