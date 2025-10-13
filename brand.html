@@ -58,7 +58,7 @@ async function loadProducts() {
         delimiter: ";", // ustaw separator na średnik
     });
     products = results.data;
-    const brandName = products[0]?.brand || brand.replace(/-/g, ' ');
+    const brandName = products[0]?.brand;
     document.title = `${brandName} - produkty B&S Polska`;
     generateCategories();
     render();

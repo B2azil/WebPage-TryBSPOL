@@ -61,7 +61,7 @@
       document.title = `${product.name} - B&S Polska`;
 
       // Ustaw dynamiczny meta description
-      document.querySelector('meta[name="description"]').setAttribute('content', product.info1 || `Produkt marki ${product.brand}`);
+      document.querySelector('meta[name="description"]').setAttribute('content', product.category || `Produkt marki ${product.brand}`);
 
       // Dynamiczne wyświetlanie dostępnych zdjęć
 
