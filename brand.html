@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B&S Polska produkty</title>
+    <link rel="icon" href="img/bspolska.png">
     <link rel="stylesheet" href="css/brand.css">
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
@@ -44,6 +45,7 @@ async function loadProducts() {
   const brand = getBrandFromQuery();
   if (!brand) {
     document.getElementById('productList').innerHTML = '<p>Brak parametru brand.</p>';
+    document.title = 'B&S Polska produkty - Błąd';
     return;
   }
   try {
@@ -56,6 +58,8 @@ async function loadProducts() {
         delimiter: ";", // ustaw separator na średnik
     });
     products = results.data;
+    const brandName = products[0]?.brand || brand.replace(/-/g, ' ');
+    document.title = `${brandName} - produkty B&S Polska`;
     generateCategories();
     render();
   } catch (e) {
@@ -63,7 +67,7 @@ async function loadProducts() {
     console.error('CSV load error', e);
   }
 }
-
+    
 document.addEventListener('DOMContentLoaded', loadProducts);
 
 function generateCategories() {
@@ -87,7 +91,7 @@ function generateCategories() {
         categoryBar.appendChild(btn);
     });
 }
-
+    
 function updateCategoryButtons() {
     document.querySelectorAll('.category-btn').forEach(btn => {
         if (btn.textContent === activeCategory) {

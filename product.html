@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Szczegóły produktu</title>
+  <title>B&S Polska - Szczegóły produktu</title>
+  <link rel="icon" href="img/bspolska.png">
+  <meta name="description" content="${product.info1 || 'Produkt marki ' + product.brand}">
   <link rel="stylesheet" href="css/product.css">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -22,6 +24,7 @@
     const brand = params.get('brand');
 
     if (!prodId) {
+      document.title = 'Nie podano produktu - B&S Polska';
       document.getElementById('productDetails').innerHTML = '<p>Nie podano produktu.</p>';
       return;
     }
@@ -49,11 +52,18 @@
       const product = products.find(p => p.name === decodedProdId);
 
       if (!product) {
+        document.title = 'Produkt nie znaleziony - B&S Polska';
         document.getElementById('productDetails').innerHTML = '<p>Produkt nie znaleziony.</p>';
         return;
       }
 
-        // Dynamiczne wyświetlanie dostępnych zdjęć
+      // Ustaw dynamiczny tytuł strony
+      document.title = `${product.name} - B&S Polska`;
+
+      // Ustaw dynamiczny meta description
+      document.querySelector('meta[name="description"]').setAttribute('content', product.info1 || `Produkt marki ${product.brand}`);
+
+      // Dynamiczne wyświetlanie dostępnych zdjęć
 
       const imageBasePath = `img/${product.brand}/`;
       const images = [
@@ -130,6 +140,7 @@
               <div class="brand">Marka: ${product.brand}</div>
               <h3>Produkt dostępny w sklepie:</h3>
               <a href="${product.link}" target="_blank" class="link"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro"></a>
+              oraz może być dostępny w <a class="club" href="${product.fanstoreLink}" target="_blank" class="link"><img src="${product.logoClub}" alt="fanstore" loading="lazy"></a>
               <div class="logo-sale">
                 <h4>oraz można znaleźć w</h4>${logosHtml}
               </div>
@@ -304,7 +315,7 @@
       const match = html.match(/brand_[\w-]+\.csv/);
       return match ? `brand/${match[0]}` : 'brand/brand_default.csv';
     } catch {
-      return 'brand/brand_default.csv';
+      return 'brand/brand_South.csv';
     }
   }
 
