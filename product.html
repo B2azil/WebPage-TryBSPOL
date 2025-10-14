@@ -57,12 +57,17 @@
           dynamicTyping: false,
           delimiter: ';'  // ustaw separator na średnik
         });
-        const products = results.data;
+        products = results.data;
 
-      // Zapisz do localStorage
-      localStorage.setItem(cacheKey, JSON.stringify(products));
-      localStorage.setItem(cacheTimestampKey, now.toString());
-    }
+        if (!products || !Array.isArray(products)) {
+          throw new Error("Nie udało się wczytać danych produktów (CSV puste lub błędne).");
+        }
+
+
+        // Zapisz do localStorage
+        localStorage.setItem(cacheKey, JSON.stringify(products));
+        localStorage.setItem(cacheTimestampKey, now.toString());
+      }
 
       // Odnajdź produkt po nazwie (prodId jest w URL zakodowane, więc dekoduj)
       const decodedProdId = decodeURIComponent(prodId);
