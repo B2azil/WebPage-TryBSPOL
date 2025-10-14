@@ -11,7 +11,6 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
-  <script src="script/Accordion.js"></script>
 </head>
 <body>
   <div class="product-container" id="productDetails">
@@ -31,7 +30,7 @@
     }
 
     const csvPath = brand ? `brand/brand_${brand}.csv` : await detectBrandCSV();
-    const cacheKey = `productData_${brand || 'default'}`; // Poprawione: Obsługa braku brand
+    const cacheKey = `productData_${brand || 'default'}`;
     const cacheTimestampKey = `productData_${brand || 'default'}_timestamp`;
     const cacheDuration = 24 * 60 * 60 * 1000; // 24 godziny
 
@@ -42,7 +41,14 @@
       const now = Date.now();
 
       if (cachedData && cachedTimestamp && (now - parseInt(cachedTimestamp) < cacheDuration)) {
-        products = JSON.parse(cachedData);
+        try {
+          products = JSON.parse(cachedData);
+        } catch (parseError) {
+          console.error('Błąd parsowania cache: ', parseError);
+          localStorage.removeItem(cacheKey);
+          localStorage.removeItem(cacheTimestampKey);
+          throw new Error('Uszkodzony cache – pobieranie danych ponownie');
+        }
       } else {
         const response = await fetch(csvPath);
         if (!response.ok) throw new Error(`Nie udało się pobrać pliku CSV: ${csvPath}`);
@@ -55,12 +61,11 @@
           delimiter: ';'  // ustaw separator na średnik
         });
 
-        // Poprawione: Walidacja wyników parsowania
         if (!results.data || !Array.isArray(results.data) || results.data.length === 0) {
           throw new Error('Plik CSV jest pusty lub nieprawidłowy');
         }
 
-        products = results.data; // Poprawione: Przypisanie do zmiennej zewnętrznej
+        products = results.data;
         localStorage.setItem(cacheKey, JSON.stringify(products));
         localStorage.setItem(cacheTimestampKey, now.toString());
       }
@@ -181,6 +186,19 @@
         </main>
       `;
       document.getElementById('productDetails').innerHTML = DOMPurify.sanitize(renderHtml);
+
+      // Logika accordion z delegacją
+      document.getElementById('productDetails').addEventListener('click', function(e) {
+        if (e.target.classList.contains('accordion-header')) {
+          const item = e.target.closest('.accordion-item');
+          const content = item.querySelector('.accordion-content');
+          const isExpanded = item.classList.contains('active');
+          item.classList.toggle('active');
+          e.target.setAttribute('aria-expanded', String(!isExpanded));
+          content.setAttribute('aria-hidden', String(isExpanded));
+          content.style.maxHeight = isExpanded ? '0' : `${content.scrollHeight}px`;
+        }
+      });
 
       // --- JS obsługa galerii ---
       const thumbs = document.querySelectorAll('.thumb-box img');
@@ -356,19 +374,6 @@
             updateImage(currentIndex + 1);
           }
         }
-      });
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const accordionHeaders = document.querySelectorAll(".accordion-header");
-        accordionHeaders.forEach(header => {
-          const content = header.nextElementSibling;
-          header.addEventListener("click", () => {
-            const isExpanded = header.getAttribute("aria-expanded") === "true";
-            header.setAttribute("aria-expanded", String(!isExpanded));
-            content.setAttribute("aria-hidden", String(isExpanded));
-            content.style.display = isExpanded ? "none" : "block";
-          });
-        });
       });
 
       const thumbnails = document.querySelectorAll('.thumbnails img');
