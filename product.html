@@ -31,43 +31,19 @@
     }
 
     const csvPath = brand ? `brand/brand_${brand}.csv` : await detectBrandCSV();
-    const cacheKey = `productData_${brand}`;
-    const cacheTimestampKey = `productData_${brand}_timestamp`;
-    const cacheDuration = 24 * 60 * 60 * 1000; // 24 godziny w milisekundach
 
     try {
-      // Sprawdź cache w localStorage
-      const cachedData = localStorage.getItem(cacheKey);
-      const cachedTimestamp = localStorage.getItem(cacheTimestampKey);
-      const now = Date.now();
+      const response = await fetch(csvPath);
+      if (!response.ok) throw new Error(`Nie udało się pobrać pliku CSV: ${csvPath}`);
+      const data = await response.text();
 
-      let products;
-      if (cachedData && cachedTimestamp && (now - parseInt(cachedTimestamp) < cacheDuration)) {
-        // Użyj danych z cache, jeśli nie wygasły
-        products = JSON.parse(cachedData);
-      } else {
-        // Pobierz dane z serwera
-        const response = await fetch(csvPath);
-        if (!response.ok) throw new Error(`Nie udało się pobrać pliku CSV: ${csvPath}`);
-        const data = await response.text();
-
-        const results = Papa.parse(data, {
-          header: true,
-          skipEmptyLines: true,
-          dynamicTyping: false,
-          delimiter: ';'  // ustaw separator na średnik
-        });
-        products = results.data;
-
-        if (!products || !Array.isArray(products)) {
-          throw new Error("Nie udało się wczytać danych produktów (CSV puste lub błędne).");
-        }
-
-
-        // Zapisz do localStorage
-        localStorage.setItem(cacheKey, JSON.stringify(products));
-        localStorage.setItem(cacheTimestampKey, now.toString());
-      }
+      const results = Papa.parse(data, {
+        header: true,
+        skipEmptyLines: true,
+        dynamicTyping: false,
+        delimiter: ';'  // ustaw separator na średnik
+      });
+      const products = results.data;
 
       // Odnajdź produkt po nazwie (prodId jest w URL zakodowane, więc dekoduj)
       const decodedProdId = decodeURIComponent(prodId);
