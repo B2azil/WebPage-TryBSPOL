@@ -6,12 +6,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>B&S Polska - Szczegóły produktu</title>
   <link rel="icon" href="img/bspolska.png">
-  <meta name="description" content="${product.info1 || 'Produkt marki ' + product.brand}">
+  <meta name="description" content="">
   <link rel="stylesheet" href="css/product.css">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script> <!-- Dodane: DOMPurify -->
-  <script src="script/Accordion.js"></script> <!-- Accordion -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+  <script src="script/Accordion.js"></script>
 </head>
 <body>
   <div class="product-container" id="productDetails">
@@ -26,18 +26,15 @@
 
     if (!prodId) {
       document.title = 'Nie podano produktu - B&S Polska';
-      document.getElementById('productDetails').innerHTML = '<p>Nie podano produktu.</p>';
+      document.getElementById('productDetails').innerHTML = '<p>Nie podano produktu. <a href="index.html">Wróć do strony głównej</a>.</p>'; // Dodane: Link do strony głównej
       return;
     }
 
-    // Jeśli w URL nie ma parametru brand, spróbuj odczytać z nazwy pliku (fallback)
-    const csvPath = brand
-      ? `brand/brand_${brand}.csv`
-      : await detectBrandCSV();
+    const csvPath = brand ? `brand/brand_${brand}.csv` : await detectBrandCSV();
 
     try {
       const response = await fetch(csvPath);
-      if (!response.ok) throw new Error(`Nie udało się pobrać ${csvPath}`);
+      if (!response.ok) throw new Error(`Nie udało się pobrać pliku CSV: ${csvPath}`);
       const data = await response.text();
 
       const results = Papa.parse(data, {
@@ -54,7 +51,7 @@
 
       if (!product) {
         document.title = 'Produkt nie znaleziony - B&S Polska';
-        document.getElementById('productDetails').innerHTML = '<p>Produkt nie znaleziony.</p>';
+        document.getElementById('productDetails').innerHTML = '<p>Produkt nie znaleziony. <a href="index.html">Wróć do strony głównej</a>.</p>'; // Dodane: Link do strony głównej
         return;
       }
 
@@ -111,13 +108,12 @@
         { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Empik.svg/330px-Empik.svg.png', alt: 'empik', link: 'https://www.empik.com/sklepy/b-s-polska,3078,m'},
         { src: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/OLX_2019.svg', alt: 'OLX', link: 'https://www.olx.pl/oferty/uzytkownik/1PcRlD/'},
         { src: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg', alt: 'amazon', link: 'https://www.amazon.pl/s?me=A10IUM9O23CD0Y&marketplaceID=A1C3SOZRARQ6R3'},
-        { src: 'https://arena.pl/dist/img/logo-arena.svg', alt: 'arena', link: 'https://arena.pl/sprzedawca/b_and_s_polska/sklep'},
-        // Dodaj więcej
+        { src: 'https://arena.pl/dist/img/logo-arena.svg', alt: 'arena', link: 'https://arena.pl/sprzedawca/b_and_s_polska/sklep'}
       ];
       
       const logosHtml = shops.map(shop => `
-        <a href="${shop.link}" target="_blank" rel="noopener noreferrer"> <!-- Dodane rel dla bezpieczeństwa -->
-          <img src="${shop.src}" alt="${shop.alt}" class="shop-logo"> <!-- usunięte na chwile póki logo nie będzie lokalnie 'main/img/' -->
+        <a href="${shop.link}" target="_blank" rel="noopener noreferrer">
+          <img src="${shop.src}" alt="${shop.alt}" class="shop-logo">
         </a>
       `).join('');
 
@@ -144,15 +140,14 @@
             </div>
             <div class="accordion">
               <div class="accordion-item">
-                <button class="accordion-header" role="button" aria-expanded="false" aria-controls="menu" title="lista opisu produktu">Opis produktu</button>
-                <div class="accordion-content" aria-controls="id-content" aria-hidden="true"> <!-- Dodane aria-hidden -->
+                <button class="accordion-header" role="button" aria-expanded="false" aria-controls="desc-content" title="lista opisu produktu">Opis produktu</button>
+                <div class="accordion-content" id="desc-content" aria-hidden="true">
                     ${infosHtml}
                 </div>
               </div>
-
               <div class="accordion-item">
-                <button class="accordion-header" title="lista szczegółów produktu">Specyfikacja techniczna produktu</button>
-                <div class="accordion-content" aria-hidden="true"> <!-- Dodane aria-hidden -->
+                <button class="accordion-header" role="button" aria-expanded="false" aria-controls="spec-content" title="lista szczegółów produktu">Specyfikacja techniczna produktu</button>
+                <div class="accordion-content" id="spec-content" aria-hidden="true">
                     <p>Wysokość: ${DOMPurify.sanitize(product.height)} cm</p>
                     <p>Szerokość: ${DOMPurify.sanitize(product.width)} cm</p>
                     <p>Głębokość: ${DOMPurify.sanitize(product.depth)} cm</p>
@@ -162,11 +157,11 @@
                     <p>EAN (GTIN) produktu: ${DOMPurify.sanitize(product.BarCode)}</p>
                 </div>
               </div>
-            </div>  
+            </div>
           </section>
         </main>
       `;
-      document.getElementById('productDetails').innerHTML = DOMPurify.sanitize(renderHtml); // Sanitizuj całość
+      document.getElementById('productDetails').innerHTML = DOMPurify.sanitize(renderHtml);
 
       // --- JS obsługa galerii ---
       const thumbs = document.querySelectorAll('.thumb-box img');
@@ -179,44 +174,45 @@
         thumbBoxes.forEach(b => b.classList.remove('active'));
         thumbBoxes[index].classList.add('active');
         currentIndex = index;
+        currentImg.alt = `${DOMPurify.sanitize(product.name)} - zdjęcie ${index + 1}`;
+        currentImg.setAttribute('aria-label', `Zdjęcie produktu: ${DOMPurify.sanitize(product.name)}, ${index + 1} z ${images.length}`);
+        thumbs.forEach(t => t.setAttribute('aria-selected', 'false'));
+        thumbs[index].setAttribute('aria-selected', 'true');
       }
 
       thumbs.forEach((thumb, i) => {
         thumb.setAttribute('tabindex', '0');
+        thumb.addEventListener('click', () => updateImage(i)); // Zmieniono na click, zachowano mouseenter dla desktop
         thumb.addEventListener('mouseenter', () => {
-          currentImg.src = thumb.src;
-          thumbBoxes.forEach(b => b.classList.remove('active'));
-          thumbBoxes[i].classList.add('active');
+          if (!('ontouchstart' in window)) updateImage(i); // Dodane: Mouseenter tylko na desktop
         });
         thumb.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-            currentImg.src = thumb.src;
-            thumbBoxes.forEach(b => b.classList.remove('active'));
-            thumbBoxes[i].classList.add('active');
-          }
+          if (e.key === 'Enter') updateImage(i);
         });
       });
 
-      // Zoom Effect
       const imageBox = document.querySelector('.main-image .image-box');
-      imageBox.addEventListener('mousemove', (e) => {
-        const rect = imageBox.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        currentImg.style.transformOrigin = `${x}% ${y}%`;
-        currentImg.style.transform = "scale(2)";
-      });
-      imageBox.addEventListener('mouseleave', () => {
-        currentImg.style.transform = "scale(1)";
-        currentImg.style.transformOrigin = "center center";
-      });
+      // Dodane: Wyłącz zoom na urządzeniach dotykowych
+      if (!('ontouchstart' in window)) {
+        imageBox.addEventListener('mousemove', (e) => {
+          const rect = imageBox.getBoundingClientRect();
+          const x = ((e.clientX - rect.left) / rect.width) * 100;
+          const y = ((e.clientY - rect.top) / rect.height) * 100;
+          currentImg.style.transformOrigin = `${x}% ${y}%`;
+          currentImg.style.transform = "scale(2)";
+        });
+        imageBox.addEventListener('mouseleave', () => {
+          currentImg.style.transform = "scale(1)";
+          currentImg.style.transformOrigin = "center center";
+        });
+      }
 
       // Full-Screen Image
       function openFullscreen() {
         const fullscreenDiv = document.createElement('div');
         fullscreenDiv.className = 'fullscreen-image';
-        fullscreenDiv.innerHTML = DOMPurify.sanitize(`  // Sanitizuj modal
-          <img src="${images[currentIndex]}" alt="${DOMPurify.sanitize(product.name)}">
+        fullscreenDiv.innerHTML = DOMPurify.sanitize(`
+          <img src="${images[currentIndex]}" alt="${DOMPurify.sanitize(product.name)} - zdjęcie ${currentIndex + 1}">
           <button title="Zamknij galerię" aria-label="Zamknij galerię" class="close-button">×</button>
           <button title="Poprzednie zdjęcie" aria-label="Poprzednie zdjęcie" class="nav-arrow prev"><i class="fa fa-arrow-left"></i></button>
           <button title="Następne zdjęcie" aria-label="Następne zdjęcie" class="nav-arrow next"><i class="fa fa-arrow-right"></i></button>
@@ -228,27 +224,50 @@
         const prevButton = fullscreenDiv.querySelector('.nav-arrow.prev');
         const nextButton = fullscreenDiv.querySelector('.nav-arrow.next');
 
-        // Update image in full-screen mode
+        // Dodane: Pinch-to-zoom
+        let scale = 1;
+        let lastDistance = 0;
+        fullscreenImg.style.transform = `scale(${scale})`;
+
+        fullscreenDiv.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 2) {
+            lastDistance = Math.hypot(
+              e.touches[0].pageX - e.touches[1].pageX,
+              e.touches[0].pageY - e.touches[1].pageY
+            );
+          }
+        });
+
+        fullscreenDiv.addEventListener('touchmove', (e) => {
+          if (e.touches.length === 2) {
+            e.preventDefault();
+            const currentDistance = Math.hypot(
+              e.touches[0].pageX - e.touches[1].pageX,
+              e.touches[0].pageY - e.touches[1].pageY
+            );
+            const delta = currentDistance - lastDistance;
+            scale = Math.max(1, Math.min(scale + delta * 0.01, 3)); // Skala od 1 do 3
+            fullscreenImg.style.transform = `scale(${scale})`;
+            lastDistance = currentDistance;
+          }
+        });
+
         function updateFullscreenImage(index) {
-          // Zapętlanie indeksów
           currentIndex = (index < 0) ? images.length - 1 : (index >= images.length) ? 0 : index;
           fullscreenImg.src = images[currentIndex];
+          fullscreenImg.alt = `${DOMPurify.sanitize(product.name)} - zdjęcie ${currentIndex + 1}`;
           thumbBoxes.forEach(b => b.classList.remove('active'));
           thumbBoxes[currentIndex].classList.add('active');
           currentImg.src = images[currentIndex];
           prevButton.style.display = 'block';
           nextButton.style.display = 'block';
+          scale = 1; // Reset skali przy zmianie obrazu
+          fullscreenImg.style.transform = `scale(${scale})`;
         }
 
-        prevButton.addEventListener('click', () => {
-          updateFullscreenImage(currentIndex - 1);
-        });
+        prevButton.addEventListener('click', () => updateFullscreenImage(currentIndex - 1));
+        nextButton.addEventListener('click', () => updateFullscreenImage(currentIndex + 1));
 
-        nextButton.addEventListener('click', () => {
-          updateFullscreenImage(currentIndex + 1);
-        });
-
-        // Arrow key navigation
         function handleKeyNavigation(e) {
           if (e.key === 'ArrowLeft') {
             updateFullscreenImage(currentIndex - 1);
@@ -315,17 +334,15 @@
       });
 
       document.addEventListener("DOMContentLoaded", () => {
-        const accordionHeader = document.querySelector(".accordion-header");
-        const accordionContent = document.querySelector(".accordion-content");
-
-        accordionHeader.addEventListener("click", () => {
-          const isExpanded = accordionHeader.getAttribute("aria-expanded") === "true";
-
-          // Zmień wartość aria-expanded
-          accordionHeader.setAttribute("aria-expanded", String(!isExpanded));
-
-          // Pokaż lub ukryj zawartość
-          accordionContent.style.display = isExpanded ? "none" : "block";
+        const accordionHeaders = document.querySelectorAll(".accordion-header");
+        accordionHeaders.forEach(header => {
+          const content = header.nextElementSibling;
+          header.addEventListener("click", () => {
+            const isExpanded = header.getAttribute("aria-expanded") === "true";
+            header.setAttribute("aria-expanded", String(!isExpanded));
+            content.setAttribute("aria-hidden", String(isExpanded));
+            content.style.display = isExpanded ? "none" : "block";
+          });
         });
       });
 
@@ -344,10 +361,18 @@
           thumb.setAttribute('aria-selected', 'true');
         });
       });
-
     } catch (error) {
-      document.getElementById('productDetails').innerHTML = `<p>Błąd podczas ładowania danych produktu: ${DOMPurify.sanitize(error.message)}. <a href="index.html">Wróć do strony głównej</a>.</p>`; // Ulepszony komunikat
-      console.error('Błąd ładowania CSV:', error);
+      // Dodane: Szczegółowa obsługa błędów
+      let errorMessage = '';
+      if (error.message.includes('Nie udało się pobrać')) {
+        errorMessage = `Nie można załadować danych produktu z pliku ${csvPath}. <button onclick="window.location.reload()">Spróbuj ponownie</button> lub <a href="index.html">wróć do strony głównej</a>.`;
+      } else if (error.message.includes('Failed to parse')) {
+        errorMessage = `Błąd parsowania danych produktu. Skontaktuj się z administratorem lub <a href="index.html">wróć do strony głównej</a>.`;
+      } else {
+        errorMessage = `Wystąpił nieoczekiwany błąd: ${DOMPurify.sanitize(error.message)}. <a href="index.html">Wróć do strony głównej</a>.`;
+      }
+      document.getElementById('productDetails').innerHTML = `<p>${errorMessage}</p>`;
+      console.error(`Błąd ładowania produktu (CSV: ${csvPath}):`, error); // Dodane: Więcej kontekstu w logach
     }
   }
 
