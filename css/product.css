@@ -62,6 +62,11 @@ a.back-link:hover {
   cursor: pointer;
 }
 
+.thumb-box:focus, button:focus {
+  outline: 2px solid #2980b9;
+}
+
+
 .thumb-box img {
   max-width: 100%;
   max-height: 100%;

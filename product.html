@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="css/product.css">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script> <!-- Dodane: DOMPurify -->
   <script src="script/Accordion.js"></script> <!-- Accordion -->
 </head>
 <body>
@@ -29,10 +30,10 @@
       return;
     }
 
-      // Jeśli w URL nie ma parametru brand, spróbuj odczytać z nazwy pliku (fallback)
-      const csvPath = brand
-        ? `brand/brand_${brand}.csv`
-        : await detectBrandCSV();
+    // Jeśli w URL nie ma parametru brand, spróbuj odczytać z nazwy pliku (fallback)
+    const csvPath = brand
+      ? `brand/brand_${brand}.csv`
+      : await detectBrandCSV();
 
     try {
       const response = await fetch(csvPath);
@@ -43,11 +44,11 @@
         header: true,
         skipEmptyLines: true,
         dynamicTyping: false,
-          delimiter: ';'  // ustaw separator na średnik
+        delimiter: ';'  // ustaw separator na średnik
       });
       const products = results.data;
 
-        // Odnajdź produkt po nazwie (prodId jest w URL zakodowane, więc dekoduj)
+      // Odnajdź produkt po nazwie (prodId jest w URL zakodowane, więc dekoduj)
       const decodedProdId = decodeURIComponent(prodId);
       const product = products.find(p => p.name === decodedProdId);
 
@@ -57,42 +58,40 @@
         return;
       }
 
-      // Ustaw dynamiczny tytuł strony
-      document.title = `${product.name} - B&S Polska`;
+      // Ustaw dynamiczny tytuł strony (z sanitizacją)
+      document.title = `${DOMPurify.sanitize(product.name)} - B&S Polska`;
 
-      // Ustaw dynamiczny meta description
-      document.querySelector('meta[name="description"]').setAttribute('content', product.category || `Produkt marki ${product.brand}`);
+      // Ustaw dynamiczny meta description (z sanitizacją)
+      document.querySelector('meta[name="description"]').setAttribute('content', DOMPurify.sanitize(product.category) || `Produkt marki ${DOMPurify.sanitize(product.brand)}`);
 
-      // Dynamiczne wyświetlanie dostępnych zdjęć
-
-      const imageBasePath = `img/${product.brand}/`;
+      // Dynamiczne wyświetlanie dostępnych zdjęć z CSV (sanitizuj ścieżki)
+      const imageBasePath = `img/${DOMPurify.sanitize(product.brand)}/`;
       const images = [
         product.image, product.image2, product.image3,
         product.image4, product.image5, product.image6,
         product.image7, product.image8
-        ].filter(src => src && src.trim() !== '')
-          .map(src => imageBasePath + src);;
+      ].filter(src => src && src.trim() !== '')
+       .map(src => imageBasePath + DOMPurify.sanitize(src));
 
-
-        // Galeria
+      // Galeria (sanitizacja alt i aria)
       const galleryHtml = `
         <div class="gallery">
-          <div class="thumbnails">
+          <div class="thumbnails" role="tablist">
             ${images.map((src, i) => `
               <div class="thumb-box">
-                <img src="${src}" data-index="${i}" alt="${product.name} miniatura" loading="lazy">
+                <img src="${src}" data-index="${i}" alt="${DOMPurify.sanitize(product.name)} - zdjęcie ${i + 1} miniatura" tabindex="0" loading="lazy" role="tab" aria-selected="${i === 0 ? 'true' : 'false'}">
               </div>
             `).join('')}
           </div>
           <div class="main-image">
             <div class="image-box">
-              <img id="currentImage" src="${images[0]}" alt="${product.name}">
+              <img id="currentImage" src="${images[0]}" alt="${DOMPurify.sanitize(product.name)} - zdjęcie 1" role="img" aria-label="Zdjęcie produktu: ${DOMPurify.sanitize(product.name)}, 1 z ${images.length}">
             </div>
           </div>
         </div>
       `;
 
-      // Opis
+      // Opis (sanitizuj text)
       const infoFields = [
         'info1','info2','info3','info4',
         'info5','info6','info7','info8',
@@ -102,75 +101,74 @@
       const infosHtml = infoFields
         .map(field => product[field])
         .filter(text => text && text.trim() !== '')
-        .map(text => `<p class="description">- ${text}</p>`)
+        .map(text => `<p class="description">- ${DOMPurify.sanitize(text)}</p>`)
         .join('');
 
+      // Tablica logo sklepów (stała dla wszystkich produktów) – sanitizacja niepotrzebna, bo stałe dane
+      const shops = [
+        { src: 'https://erli.pl/sprzedawcy/assets/images/logo-shop.svg', alt: 'erli', link: 'https://erli.pl/sklep/BandSPolska/33689'},
+        { src: 'https://upload.wikimedia.org/wikipedia/commons/4/40/Kaufland_2016_horizontal.svg', alt: 'kaufland', link: 'https://www.kaufland.pl/shops/BandSPolska/'},
+        { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Empik.svg/330px-Empik.svg.png', alt: 'empik', link: 'https://www.empik.com/sklepy/b-s-polska,3078,m'},
+        { src: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/OLX_2019.svg', alt: 'OLX', link: 'https://www.olx.pl/oferty/uzytkownik/1PcRlD/'},
+        { src: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg', alt: 'amazon', link: 'https://www.amazon.pl/s?me=A10IUM9O23CD0Y&marketplaceID=A1C3SOZRARQ6R3'},
+        { src: 'https://arena.pl/dist/img/logo-arena.svg', alt: 'arena', link: 'https://arena.pl/sprzedawca/b_and_s_polska/sklep'},
+        // Dodaj więcej
+      ];
+      
+      const logosHtml = shops.map(shop => `
+        <a href="${shop.link}" target="_blank" rel="noopener noreferrer"> <!-- Dodane rel dla bezpieczeństwa -->
+          <img src="${shop.src}" alt="${shop.alt}" class="shop-logo"> <!-- usunięte na chwile póki logo nie będzie lokalnie 'main/img/' -->
+        </a>
+      `).join('');
 
-        
-        // Tablica logo sklepów (stała dla wszystkich produktów)
-        const shops = [
-          { src: 'https://erli.pl/sprzedawcy/assets/images/logo-shop.svg', alt: 'erli', link: 'https://erli.pl/sklep/BandSPolska/33689'},
-          { src: 'https://upload.wikimedia.org/wikipedia/commons/4/40/Kaufland_2016_horizontal.svg', alt: 'kaufland', link: 'https://www.kaufland.pl/shops/BandSPolska/'},
-          { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Empik.svg/330px-Empik.svg.png', alt: 'empik', link: 'https://www.empik.com/sklepy/b-s-polska,3078,m'},
-          { src: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/OLX_2019.svg', alt: 'OLX', link: 'https://www.olx.pl/oferty/uzytkownik/1PcRlD/'},
-          { src: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg', alt: 'amazon', link: 'https://www.amazon.pl/s?me=A10IUM9O23CD0Y&marketplaceID=A1C3SOZRARQ6R3'},
-          { src: 'https://arena.pl/dist/img/logo-arena.svg', alt: 'arena', link: 'https://arena.pl/sprzedawca/b_and_s_polska/sklep'},
-          // Dodaj więcej
-        ];
-        
-        const logosHtml = shops.map(shop => `
-          <a href="${shop.link}" target="_blank">
-            <img src="main/img/${shop.src}" alt="${shop.alt}" class="shop-logo">
-          </a>
-        `).join('');
-
-        // Render
-      document.getElementById('productDetails').innerHTML = `
+      // Render (sanitizuj całość)
+      const renderHtml = `
         <div class="header">
-          <a href="brand.html?brand=${product.brandPage || 'index.html'}" class="back-link"><i class="fa fa-long-arrow-left"></i> Powrót do listy produktów marki ${product.brand}</a>
+          <a href="brand.html?brand=${DOMPurify.sanitize(product.brandPage || 'index.html')}" class="back-link"><i class="fa fa-long-arrow-left"></i> Powrót do listy produktów marki ${DOMPurify.sanitize(product.brand)}</a>
         </div>
         <main class="product-page">
           ${galleryHtml}
           <section class="product-details">
-            <h1 class="name">${product.name}</h1>
-            <span class="sku">SKU: ${product.sku}</span>
-            <div class="category">Kategoria: ${product.category}</div>
-            <div class="price">Cena rekomendowana: ${product.price} zł</div>
+            <h1 class="name">${DOMPurify.sanitize(product.name)}</h1>
+            <span class="sku">SKU: ${DOMPurify.sanitize(product.sku)}</span>
+            <div class="category">Kategoria: ${DOMPurify.sanitize(product.category)}</div>
+            <div class="price">Cena rekomendowana: ${DOMPurify.sanitize(product.price)} zł</div>
             <div>
-              <div class="brand">Marka: ${product.brand}</div>
+              <div class="brand">Marka: ${DOMPurify.sanitize(product.brand)}</div>
               <h3>Produkt dostępny w sklepie:</h3>
-              <a href="${product.link}" target="_blank" class="link"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro"></a>
-              oraz może być dostępny w <a class="club" href="${product.fanstoreLink}" target="_blank" class="link"><img src="${product.logoClub}" alt="fanstore" loading="lazy"></a>
+              <a href="${DOMPurify.sanitize(product.link)}" target="_blank" rel="noopener noreferrer" class="link"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro"></a>
+              oraz może być dostępny w <a class="club" href="${DOMPurify.sanitize(product.fanstoreLink)}" target="_blank" rel="noopener noreferrer" class="link"><img src="${DOMPurify.sanitize(product.logoClub)}" alt="fanstore" loading="lazy"></a>
               <div class="logo-sale">
                 <h4>oraz można znaleźć w</h4>${logosHtml}
               </div>
             </div>
             <div class="accordion">
               <div class="accordion-item">
-                <button class="accordion-header">Opis produktu</button>
-                <div class="accordion-content">
+                <button class="accordion-header" role="button" aria-expanded="false" aria-controls="menu" title="lista opisu produktu">Opis produktu</button>
+                <div class="accordion-content" aria-controls="id-content" aria-hidden="true"> <!-- Dodane aria-hidden -->
                     ${infosHtml}
                 </div>
               </div>
 
               <div class="accordion-item">
-                <button class="accordion-header">Specyfikacja techniczna produktu</button>
-                <div class="accordion-content">
-                    <p>Wysokość: ${product.height} cm</p>
-                    <p>Szerokość: ${product.width} cm</p>
-                    <p>Głębokość: ${product.depth} cm</p>
-                    <p>Waga produktu: ${product.weight} g</p>
-                    <p>Materiał: ${product.material}</p>
-                    <p>Kolor dominujący: ${product.color}</p>
-                    <p>EAN (GTIN) produktu: ${product.BarCode}</p>
+                <button class="accordion-header" title="lista szczegółów produktu">Specyfikacja techniczna produktu</button>
+                <div class="accordion-content" aria-hidden="true"> <!-- Dodane aria-hidden -->
+                    <p>Wysokość: ${DOMPurify.sanitize(product.height)} cm</p>
+                    <p>Szerokość: ${DOMPurify.sanitize(product.width)} cm</p>
+                    <p>Głębokość: ${DOMPurify.sanitize(product.depth)} cm</p>
+                    <p>Waga produktu: ${DOMPurify.sanitize(product.weight)} g</p>
+                    <p>Materiał: ${DOMPurify.sanitize(product.material)}</p>
+                    <p>Kolor dominujący: ${DOMPurify.sanitize(product.color)}</p>
+                    <p>EAN (GTIN) produktu: ${DOMPurify.sanitize(product.BarCode)}</p>
                 </div>
               </div>
             </div>  
           </section>
         </main>
       `;
+      document.getElementById('productDetails').innerHTML = DOMPurify.sanitize(renderHtml); // Sanitizuj całość
 
-        // --- JS obsługa galerii ---
+      // --- JS obsługa galerii ---
       const thumbs = document.querySelectorAll('.thumb-box img');
       const thumbBoxes = document.querySelectorAll('.thumb-box');
       const currentImg = document.getElementById('currentImage');
@@ -184,9 +182,20 @@
       }
 
       thumbs.forEach((thumb, i) => {
-        thumb.addEventListener('mouseenter', () => updateImage(i));
+        thumb.setAttribute('tabindex', '0');
+        thumb.addEventListener('mouseenter', () => {
+          currentImg.src = thumb.src;
+          thumbBoxes.forEach(b => b.classList.remove('active'));
+          thumbBoxes[i].classList.add('active');
+        });
+        thumb.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            currentImg.src = thumb.src;
+            thumbBoxes.forEach(b => b.classList.remove('active'));
+            thumbBoxes[i].classList.add('active');
+          }
+        });
       });
-      thumbBoxes[0]?.classList.add('active');
 
       // Zoom Effect
       const imageBox = document.querySelector('.main-image .image-box');
@@ -206,12 +215,12 @@
       function openFullscreen() {
         const fullscreenDiv = document.createElement('div');
         fullscreenDiv.className = 'fullscreen-image';
-        fullscreenDiv.innerHTML = `
-          <img src="${images[currentIndex]}" alt="${product.name}">
-          <button class="close-button">×</button>
-          <button class="nav-arrow prev"><i class="fa fa-arrow-left"></i></button>
-          <button class="nav-arrow next"><i class="fa fa-arrow-right"></i></button>
-        `;
+        fullscreenDiv.innerHTML = DOMPurify.sanitize(`  // Sanitizuj modal
+          <img src="${images[currentIndex]}" alt="${DOMPurify.sanitize(product.name)}">
+          <button title="Zamknij galerię" aria-label="Zamknij galerię" class="close-button">×</button>
+          <button title="Poprzednie zdjęcie" aria-label="Poprzednie zdjęcie" class="nav-arrow prev"><i class="fa fa-arrow-left"></i></button>
+          <button title="Następne zdjęcie" aria-label="Następne zdjęcie" class="nav-arrow next"><i class="fa fa-arrow-right"></i></button>
+        `);
         document.body.appendChild(fullscreenDiv);
 
         const fullscreenImg = fullscreenDiv.querySelector('img');
@@ -245,6 +254,9 @@
             updateFullscreenImage(currentIndex - 1);
           } else if (e.key === 'ArrowRight') {
             updateFullscreenImage(currentIndex + 1);
+          } else if (e.key === 'Escape') {
+            fullscreenDiv.remove();
+            document.removeEventListener('keydown', handleKeyNavigation);
           }
         }
 
@@ -302,8 +314,39 @@
         }
       });
 
+      document.addEventListener("DOMContentLoaded", () => {
+        const accordionHeader = document.querySelector(".accordion-header");
+        const accordionContent = document.querySelector(".accordion-content");
+
+        accordionHeader.addEventListener("click", () => {
+          const isExpanded = accordionHeader.getAttribute("aria-expanded") === "true";
+
+          // Zmień wartość aria-expanded
+          accordionHeader.setAttribute("aria-expanded", String(!isExpanded));
+
+          // Pokaż lub ukryj zawartość
+          accordionContent.style.display = isExpanded ? "none" : "block";
+        });
+      });
+
+      const thumbnails = document.querySelectorAll('.thumbnails img');
+      const currentImage = document.getElementById('currentImage');
+
+      thumbnails.forEach((thumb, index) => {
+        thumb.addEventListener('click', () => {
+          // Zmień źródło głównego obrazu
+          currentImage.src = thumb.src;
+          currentImage.alt = thumb.alt.replace('miniatura', 'główne zdjęcie');
+          currentImage.setAttribute('aria-label', `Zdjęcie produktu: ${DOMPurify.sanitize(product.name)}, ${index + 1} z ${images.length}`);
+
+          // Zaktualizuj aria-selected dla miniatur
+          thumbnails.forEach(t => t.setAttribute('aria-selected', 'false'));
+          thumb.setAttribute('aria-selected', 'true');
+        });
+      });
+
     } catch (error) {
-      document.getElementById('productDetails').innerHTML = '<p>Błąd podczas ładowania danych produktu.</p>';
+      document.getElementById('productDetails').innerHTML = `<p>Błąd podczas ładowania danych produktu: ${DOMPurify.sanitize(error.message)}. <a href="index.html">Wróć do strony głównej</a>.</p>`; // Ulepszony komunikat
       console.error('Błąd ładowania CSV:', error);
     }
   }
@@ -320,8 +363,6 @@
   }
 
   loadProductDetails();
-
-  
 </script>
 </body>
 </html>
