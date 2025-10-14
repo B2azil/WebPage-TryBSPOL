@@ -26,24 +26,44 @@
 
     if (!prodId) {
       document.title = 'Nie podano produktu - B&S Polska';
-      document.getElementById('productDetails').innerHTML = '<p>Nie podano produktu. <a href="index.html">Wróć do strony głównej</a>.</p>'; // Dodane: Link do strony głównej
+      document.getElementById('productDetails').innerHTML = '<p>Nie podano produktu. <a href="index.html">Wróć do strony głównej</a>.</p>';
       return;
     }
 
     const csvPath = brand ? `brand/brand_${brand}.csv` : await detectBrandCSV();
+    const cacheKey = `productData_${brand || 'default'}`; // Poprawione: Obsługa braku brand
+    const cacheTimestampKey = `productData_${brand || 'default'}_timestamp`;
+    const cacheDuration = 24 * 60 * 60 * 1000; // 24 godziny
 
     try {
-      const response = await fetch(csvPath);
-      if (!response.ok) throw new Error(`Nie udało się pobrać pliku CSV: ${csvPath}`);
-      const data = await response.text();
+      let products;
+      const cachedData = localStorage.getItem(cacheKey);
+      const cachedTimestamp = localStorage.getItem(cacheTimestampKey);
+      const now = Date.now();
 
-      const results = Papa.parse(data, {
-        header: true,
-        skipEmptyLines: true,
-        dynamicTyping: false,
-        delimiter: ';'  // ustaw separator na średnik
-      });
-      const products = results.data;
+      if (cachedData && cachedTimestamp && (now - parseInt(cachedTimestamp) < cacheDuration)) {
+        products = JSON.parse(cachedData);
+      } else {
+        const response = await fetch(csvPath);
+        if (!response.ok) throw new Error(`Nie udało się pobrać pliku CSV: ${csvPath}`);
+        const data = await response.text();
+
+        const results = Papa.parse(data, {
+          header: true,
+          skipEmptyLines: true,
+          dynamicTyping: false,
+          delimiter: ';'  // ustaw separator na średnik
+        });
+
+        // Poprawione: Walidacja wyników parsowania
+        if (!results.data || !Array.isArray(results.data) || results.data.length === 0) {
+          throw new Error('Plik CSV jest pusty lub nieprawidłowy');
+        }
+
+        products = results.data; // Poprawione: Przypisanie do zmiennej zewnętrznej
+        localStorage.setItem(cacheKey, JSON.stringify(products));
+        localStorage.setItem(cacheTimestampKey, now.toString());
+      }
 
       // Odnajdź produkt po nazwie (prodId jest w URL zakodowane, więc dekoduj)
       const decodedProdId = decodeURIComponent(prodId);
@@ -51,7 +71,7 @@
 
       if (!product) {
         document.title = 'Produkt nie znaleziony - B&S Polska';
-        document.getElementById('productDetails').innerHTML = '<p>Produkt nie znaleziony. <a href="index.html">Wróć do strony głównej</a>.</p>'; // Dodane: Link do strony głównej
+        document.getElementById('productDetails').innerHTML = '<p>Produkt nie znaleziony. <a href="index.html">Wróć do strony głównej</a>.</p>';
         return;
       }
 
@@ -70,7 +90,6 @@
       ].filter(src => src && src.trim() !== '')
        .map(src => imageBasePath + DOMPurify.sanitize(src));
 
-      // Galeria (sanitizacja alt i aria)
       const galleryHtml = `
         <div class="gallery">
           <div class="thumbnails" role="tablist">
@@ -182,9 +201,9 @@
 
       thumbs.forEach((thumb, i) => {
         thumb.setAttribute('tabindex', '0');
-        thumb.addEventListener('click', () => updateImage(i)); // Zmieniono na click, zachowano mouseenter dla desktop
+        thumb.addEventListener('click', () => updateImage(i));
         thumb.addEventListener('mouseenter', () => {
-          if (!('ontouchstart' in window)) updateImage(i); // Dodane: Mouseenter tylko na desktop
+          if (!('ontouchstart' in window)) updateImage(i);
         });
         thumb.addEventListener('keypress', (e) => {
           if (e.key === 'Enter') updateImage(i);
@@ -252,7 +271,7 @@
               e.touches[0].pageY - e.touches[1].pageY
             );
             const delta = currentDistance - lastDistance;
-            scale = Math.max(1, Math.min(scale + delta * 0.01, 3)); // Skala od 1 do 3
+            scale = Math.max(1, Math.min(scale + delta * 0.01, 3));
             fullscreenImg.style.transform = `scale(${scale})`;
             lastDistance = currentDistance;
           }
@@ -372,13 +391,13 @@
       let errorMessage = '';
       if (error.message.includes('Nie udało się pobrać')) {
         errorMessage = `Nie można załadować danych produktu z pliku ${csvPath}. <button onclick="window.location.reload()">Spróbuj ponownie</button> lub <a href="index.html">wróć do strony głównej</a>.`;
-      } else if (error.message.includes('Failed to parse')) {
-        errorMessage = `Błąd parsowania danych produktu. Skontaktuj się z administratorem lub <a href="index.html">wróć do strony głównej</a>.`;
+      } else if (error.message.includes('Failed to parse') || error.message.includes('Plik CSV jest pusty')) {
+        errorMessage = `Błąd parsowania danych produktu z pliku ${csvPath}. Skontaktuj się z administratorem lub <a href="index.html">wróć do strony głównej</a>.`;
       } else {
         errorMessage = `Wystąpił nieoczekiwany błąd: ${DOMPurify.sanitize(error.message)}. <a href="index.html">Wróć do strony głównej</a>.`;
       }
       document.getElementById('productDetails').innerHTML = `<p>${errorMessage}</p>`;
-      console.error(`Błąd ładowania produktu (CSV: ${csvPath}):`, error); // Dodane: Więcej kontekstu w logach
+      console.error(`Błąd ładowania produktu (CSV: ${csvPath}):`, error);
     }
   }
 
