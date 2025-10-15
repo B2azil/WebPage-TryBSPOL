@@ -17,16 +17,59 @@ body {
 }
 
 /* Link Styles */
-a.back-link {
-  display: inline-block;
-  margin-top: 25px;
+
+
+
+
+a.back-button {
+  display: inline-flex;
+  margin-bottom: 0.5rem;
+  align-items: center;
+  gap: 0.5rem; /* Odstęp między ikoną a tekstem */
+  padding: 0.6rem 1.2rem;
+  background: rgb(0, 166, 81); /* Kolor tła zgodny z brandem bspolska */
+  color: #fff; /* Biały tekst dla kontrastu */
   text-decoration: none;
-  color: #2980b9; 
-  font-weight: bold;
+  font-weight: 600;
+  border-radius: 5px; /* Zaokrąglone rogi */
+  transition: background 0.5s ease, transform 0.2s ease;
+  border: 2px solid rgb(0, 126, 55);
 }
-a.back-link:hover {
-  text-decoration: underline;
+a.back-button:hover {
+  /* text-decoration: underline; */
+  background: #fff; /* Inny odcień zielonego przy hover */
+  color:#00911C; /* Zmiana koloru tekstu przy hover */
+  border: 2px solid #00911C;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
 }
+
+.back-button i {
+  font-size: 1.2rem; /* Nieco większa ikona */
+}
+
+.back-button span {
+  font-size: 1rem;
+}
+
+.header {
+  margin-bottom: 1.5rem; /* Lekko większy margines dla równowagi */
+}
+
+/* Responsywność */
+@media (max-width: 768px) {
+  .back-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  .back-button i {
+    font-size: 1rem;
+  }
+}
+
+
+
+
+
 
 /* Layout Styles */
 .product-page {
@@ -117,7 +160,7 @@ a.back-link:hover {
 
 .fullscreen-image img {
   max-width: 80%;
-  max-height: 80%;
+  max-height: 100%;
   object-fit: contain;
   transform-origin: center center;
 }
@@ -139,10 +182,10 @@ a.back-link:hover {
   top: 50%;
   transform: translateY(-50%);
   color: #fff;
-  font-size: clamp(2rem, 3vw + 1rem, 5rem);
+  font-size: clamp(2rem, 2vw + 1rem, 5rem);
   cursor: pointer;
   padding: 0.5rem;
-  background: none;
+  background: rgba(0, 0, 0, 0.6);
   border: none;
   transition: background 0.3s;
   opacity: 0;
@@ -150,7 +193,7 @@ a.back-link:hover {
 }
 
 .fullscreen-image:hover .nav-arrow {
-  opacity: 1;
+  /* opacity: 1; */
   visibility: visible;
 }
 
@@ -165,7 +208,7 @@ a.back-link:hover {
 .fullscreen-image .nav-arrow:hover {
   color: #ffffff70;
   border: none;
-  background: none;
+  /* background: none; */
 }
 
 /* Product Details Styles */
@@ -328,6 +371,17 @@ a.back-link:hover {
   .fullscreen-image .nav-arrow {
     display: none;
   }
+
+  .fullscreen-image .nav-arrow:hover {
+  color: #ffffff70;
+  border: none;
+}
+  .fullscreen-image img {
+  max-width: 100%;
+  max-height: 75%;
+  object-fit: contain;
+  transform-origin: center center;
+}
 }
 
 
@@ -441,5 +495,9 @@ a.back-link:hover {
 @media (min-width: 1200px) {
   .main-image .image-box {
     height: clamp(25rem, 45rem + 5vh, 50rem);
+}
+  .fullscreen-image:hover .nav-arrow {
+  opacity: 1;
+  visibility: visible;
 }
 }
