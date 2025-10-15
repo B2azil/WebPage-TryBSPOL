@@ -4,9 +4,7 @@
   --text-inverse: #fff;
   --brand: #00c01d;
   --brand-700: #00911C;
-  --muted-bg: #f9f9f9;
   --footer-border: #555;
-  --footer-muted: #ccc;
 
   --radius-s: 5px;
   --radius-m: 8px;
@@ -155,7 +153,7 @@ section {
 .about,
 .portfolio,
 .buy {
-  background: var(--muted-bg);
+  background: #f9f9f9;
   margin-bottom: 1rem;
 }
 
@@ -181,11 +179,23 @@ section {
 
 .buy-links a img {
   max-width: 150px;
+  max-height: 3rem;
   transition: transform 0.2s ease;
 }
 
 .buy-links a:hover img {
   transform: scale(1.1);
+}
+
+@media (max-width: 500px) {
+  .buy-links {
+    flex-direction: column; /* Ustawia elementy w kolumnie */
+    align-items: center; /* Centruje elementy w pionie */
+  }
+
+  .buy-links a img {
+    max-width: 150px; /* Zachowuje maksymalną szerokość obrazka */
+  }
 }
 
 /* ========== Footer ========== */
@@ -240,7 +250,7 @@ footer .copyright {
   text-align: center;
   padding-top: 10px;
   font-size: 0.9rem;
-  color: var(--footer-muted);
+  color: #ccc;
   border-top: 1px solid var(--footer-border);
 }
 
@@ -339,6 +349,10 @@ footer .copyright {
 }
 
 .brand-tile {
+  /* Dodajemy pozycjonowanie i ukrywanie nadmiaru dla pseudo-elementu */
+  position: relative; 
+  overflow: hidden;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -346,34 +360,62 @@ footer .copyright {
   margin: 8px;
   font-size: 1.1em;
   text-decoration: none;
-  color: #000;
+  color: #000; /* Kolor tekstu */
   border-radius: var(--radius-l);
   background: #f2f2f2;
   box-shadow: var(--shadow-1);
+  
+  /* Usprawnione przejścia dla płynniejszego efektu */
   transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    filter 0.3s ease,
-    background 0.3s ease;
+    transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .brand-tile:hover {
-  transform: scale(1.08);
+  transform: scale(1.12) translateY(-6px); /* Lekkie uniesienie */
   box-shadow: var(--shadow-2);
-  backdrop-filter: blur(5px);
-  background: linear-gradient(
-    90deg,
-    var(--color1, #f2f2f2) 0%,
+  color: #000; 
+
+  /* Zwiększamy rozmiar tła, aby było co animować */
+  background-size: 250% 250%; 
+  background-image: linear-gradient(
+    90deg, /* Zmieniony kąt dla ciekawszego efektu */
+    var(--color1, #f2f2f2) 15%,
     var(--color2, #e0e0e0) 50%,
-    var(--color3, #d0d0d0) 100%
+    var(--color3, #d0d0d0) 85%
   );
-  animation: liquid-glass 2s ease-out;
+  
+  /* Uruchamiamy nową animację przepływu gradientu */
+  animation: liquid-flow 5s ease-in-out infinite;
 }
 
-@keyframes liquid-glass {
-  0%   { opacity: 0.8; filter: brightness(1); }
-  50%  { opacity: 1;   filter: brightness(1.2); }
-  100% { opacity: 0.9; filter: brightness(1.1); }
+/* Pseudo-element dodający efekt błysku/połysku */
+.brand-tile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150%; /* Startuje poza ekranem */
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.5) 50%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg); /* Pochylenie błysku */
+  transition: left 0.7s ease-in-out;
+}
+
+.brand-tile:hover::before {
+  left: 150%; /* Przesuwa błysk na drugą stronę */
+}
+
+/* Nowa, płynniejsza animacja dla tła */
+@keyframes liquid-flow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* ========== Logos slider (logos1) ========== */
