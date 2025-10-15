@@ -39,10 +39,25 @@
     // Hamburger toggle
     const hamburger = document.querySelector('.hamburger');
     const mobileNav = document.querySelector('.mobile-nav');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
 
     hamburger.addEventListener('click', () => {
       mobileNav.classList.toggle('open');
       hamburger.setAttribute('aria-expanded', hamburger.getAttribute('aria-expanded') === 'false' ? 'true' : 'false');
+    });
+
+    // Zamknij menu po kliknięciu w link
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        // Usuń klasę active ze wszystkich linków i dodaj do klikniętego
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+
+        // Zamknij menu mobilne
+        mobileNav.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
     });
 
     // Zmniejsz header na scroll
@@ -53,15 +68,6 @@
       } else {
         header.classList.remove('scrolled');
       }
-    });
-
-    // Aktywne linki (prosty przykład, dostosuj do sekcji)
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-      });
     });
   </script>
 </header>
@@ -273,8 +279,7 @@
 
         return tile;
       }
-
-      // Zaktualizowana funkcja loadBrands (z Twojej propozycji, zintegrowana z logiką tworzenia kafelków)
+      // Główna funkcja ładowania i renderowania
       async function loadBrands() {
         const gridContainer = document.querySelector('.brand-grid'); // Przeniesione tutaj dla spójności
 
@@ -283,7 +288,12 @@
           if (!response.ok) throw new Error('Nie udało się załadować pliku CSV');
 
           const text = await response.text();
-          const results = Papa.parse(text, { header: true, skipEmptyLines: true });
+          const results = Papa.parse(text, { 
+            header: true, 
+            skipEmptyLines: true,
+            delimiter: ";" 
+          });
+
 
           if (results.errors.length > 0) {
             throw new Error('Błąd parsowania CSV: ' + results.errors[0].message);
@@ -606,7 +616,7 @@
           const a = document.createElement('a');
           a.href = sanitizedLink;
           a.target = '_blank';
-          a.rel = 'noopener noreferrer'; // Poprawka bezpieczeństwa
+          a.rel = 'noopener noreferrer';
           a.setAttribute('aria-label', `Przejdź do sklepu ${row.alt || row.link}`);
 
           const img = document.createElement('img');
