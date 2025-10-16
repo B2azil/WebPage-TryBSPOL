@@ -157,6 +157,10 @@ section {
   margin-bottom: 1rem;
 }
 
+.buy h2 {
+  padding-bottom: 2rem;
+}
+
 /* ========== Components: grids, tiles, buy-links ========== */
 .portfolio-grid {
   display: grid;
