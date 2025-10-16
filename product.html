@@ -88,6 +88,28 @@
       // Ustaw dynamiczny meta description (z sanitizacją)
       document.querySelector('meta[name="description"]').setAttribute('content', DOMPurify.sanitize(product.category) || `Produkt marki ${DOMPurify.sanitize(product.brand)}`);
 
+
+      // DODANA FUNKCJONALNOŚĆ: Dynamiczne ustawianie koloru marki dla back-button
+      if (product.brandColor) {
+        const brandColor = DOMPurify.sanitize(product.brandColor.trim());
+        const style = document.createElement('style');
+        style.textContent = `
+          a.back-button {
+            background: ${brandColor} !important;
+            border-color: ${brandColor} !important;
+            border: 2px solid ${brandColor}; 
+          }
+          a.back-button:hover {
+            background: #fff !important;
+            color: ${brandColor} !important;
+            border-color: ${brandColor} !important;
+            box-shadow: 0 4px 12px rgb(0 0 0 / 0.15);
+            border: 2px solid ${brandColor};
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
       // Dynamiczne wyświetlanie dostępnych zdjęć z CSV (sanitizuj ścieżki)
       const imageBasePath = `img/${DOMPurify.sanitize(product.brand)}/`;
       const images = [
@@ -143,6 +165,16 @@
         </a>
       `).join('');
 
+
+      // Tworzenie stałej ścieżki dla logoClub
+      const clubLogoPath = product.logoClub && product.logoClub.trim() 
+        ? `${imageBasePath}${DOMPurify.sanitize(product.logoClub)}` 
+        : '';
+        
+      const clubHtml = (product.logoClub && product.fanstoreLink && product.logoClub.trim() && product.fanstoreLink.trim()) 
+        ? `<h5>oraz</h5> <a class="club" href="${DOMPurify.sanitize(product.fanstoreLink)}" target="_blank" rel="noopener noreferrer"><img src="${clubLogoPath}" alt="Fanstore" loading="lazy"></a>`
+        : '';
+
       // Render (sanitizuj całość)
       const renderHtml = `
         <div class="header">
@@ -158,11 +190,10 @@
             <div>
               <div class="brand">Marka: ${DOMPurify.sanitize(product.brand)}</div>
               <h3>Produkt dostępny w sklepie:</h3>
+              <div class="main-shop">
               <a href="${DOMPurify.sanitize(product.link)}" target="_blank" rel="noopener noreferrer" class="link"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro"></a>
-              oraz <a class="club" href="${DOMPurify.sanitize(product.fanstoreLink)}" target="_blank" rel="noopener noreferrer" class="link"><img src="${DOMPurify.sanitize(product.logoClub)}" loading="lazy"></a>
-              <div class="logo-sale">
-                <h4>szukaj także w: </h4>${logosHtml}
-              </div>
+              ${clubHtml}</div>
+              <div class="logo-sale"><h4>szukaj także w: </h4>${logosHtml}</div>
             </div>
             <div class="accordion">
               <div class="accordion-item">
