@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>B&S Polska - Szczegóły produktu</title>
-  <link rel="icon" href="img/bspolska.png">
+  <link rel="icon" type="image/png" href="main\img\bspolska.png">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
   <meta name="description" content="">
   <link rel="stylesheet" href="css/product.css">
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -47,7 +49,7 @@
           console.error('Błąd parsowania cache: ', parseError);
           localStorage.removeItem(cacheKey);
           localStorage.removeItem(cacheTimestampKey);
-          throw new Error('Uszkodzony cache – pobieranie danych ponownie');
+          throw new Error('Uszkodzony cache - pobieranie danych ponownie');
         }
       } else {
         const response = await fetch(csvPath);
@@ -144,7 +146,7 @@
       // Render (sanitizuj całość)
       const renderHtml = `
         <div class="header">
-          <a href="brand.html?brand=${DOMPurify.sanitize(product.brandPage || 'index.html')}" class="back-link"><i class="fa fa-long-arrow-left"></i> Powrót do listy produktów marki ${DOMPurify.sanitize(product.brand)}</a>
+          <a href="brand.html?brand=${DOMPurify.sanitize(product.brandPage || 'index.html')}" class="back-button"><i class="fa fa-long-arrow-left" aria-hidden="true"></i><span> Powrót do listy produktów marki ${DOMPurify.sanitize(product.brand)}</span></a>
         </div>
         <main class="product-page">
           ${galleryHtml}
@@ -157,9 +159,9 @@
               <div class="brand">Marka: ${DOMPurify.sanitize(product.brand)}</div>
               <h3>Produkt dostępny w sklepie:</h3>
               <a href="${DOMPurify.sanitize(product.link)}" target="_blank" rel="noopener noreferrer" class="link"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro"></a>
-              oraz może być dostępny w <a class="club" href="${DOMPurify.sanitize(product.fanstoreLink)}" target="_blank" rel="noopener noreferrer" class="link"><img src="${DOMPurify.sanitize(product.logoClub)}" alt="fanstore" loading="lazy"></a>
+              oraz <a class="club" href="${DOMPurify.sanitize(product.fanstoreLink)}" target="_blank" rel="noopener noreferrer" class="link"><img src="${DOMPurify.sanitize(product.logoClub)}" loading="lazy"></a>
               <div class="logo-sale">
-                <h4>oraz można znaleźć w</h4>${logosHtml}
+                <h4>szukaj także w: </h4>${logosHtml}
               </div>
             </div>
             <div class="accordion">
