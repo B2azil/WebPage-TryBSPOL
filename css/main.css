@@ -182,7 +182,7 @@ section {
 }
 
 .buy-links a img {
-  max-width: 150px;
+  max-width: 10rem;
   max-height: 3rem;
   transition: transform 0.2s ease;
 }
