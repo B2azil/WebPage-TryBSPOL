@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>B&S Polska - Szczegóły produktu</title>
-  <link rel="icon" type="image/png" href="main\img\bspolska.png">
+  <link rel="icon" type="image/png" href="main\img\fav-icon-BSpolska.png">
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#ffffff">
   <meta name="description" content="">
@@ -186,9 +186,9 @@
             <h1 class="name">${DOMPurify.sanitize(product.name)}</h1>
             <span class="sku">SKU: ${DOMPurify.sanitize(product.sku)}</span>
             <div class="category">Kategoria: ${DOMPurify.sanitize(product.category)}</div>
-            <div class="price">Cena rekomendowana: ${DOMPurify.sanitize(product.price)} zł</div>
+            <div class="brand">Marka: ${DOMPurify.sanitize(product.brand)}</div>
             <div>
-              <div class="brand">Marka: ${DOMPurify.sanitize(product.brand)}</div>
+              <div class="price">Cena rekomendowana: ${DOMPurify.sanitize(product.price)} zł</div>
               <h3>Produkt dostępny w sklepie:</h3>
               <div class="main-shop">
               <a href="${DOMPurify.sanitize(product.link)}" target="_blank" rel="noopener noreferrer" class="link"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Allegro.pl_sklep.svg" alt="Allegro"></a>
@@ -283,7 +283,7 @@
         fullscreenDiv.className = 'fullscreen-image';
         fullscreenDiv.innerHTML = DOMPurify.sanitize(`
           <img src="${images[currentIndex]}" alt="${DOMPurify.sanitize(product.name)} - zdjęcie ${currentIndex + 1}">
-          <button title="Zamknij galerię" aria-label="Zamknij galerię" class="close-button">×</button>
+          <button title="Zamknij galerię" aria-label="Zamknij galerię" class="close-button">x</button>
           <button title="Poprzednie zdjęcie" aria-label="Poprzednie zdjęcie" class="nav-arrow prev"><i class="fa fa-arrow-left"></i></button>
           <button title="Następne zdjęcie" aria-label="Następne zdjęcie" class="nav-arrow next"><i class="fa fa-arrow-right"></i></button>
         `);

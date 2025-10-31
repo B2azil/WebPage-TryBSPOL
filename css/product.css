@@ -216,8 +216,8 @@ a.back-button:hover {
 }
 
 .price {
-  font-size: 1.3em;
-  font-weight: bold;
+  /* font-size: 1.1rem; */
+  font-weight: 600;
   color: #e67e22; 
   margin: 1.3em 0;
 }
@@ -447,13 +447,13 @@ a.back-button:hover {
   }
 
   .price {
-    font-size: clamp(1.2rem, 1rem + 0.8cqw, 1.8rem);
+    font-size: clamp(1.2rem, 1rem + 0.7cqw, 1.8rem);
     margin: clamp(16px, 1.2cqh, 28px) 0;
   }
 
   .brand,
   .category {
-    font-size: clamp(1rem, 0.9rem + 0.4cqw, 1.2rem);
+    font-size: clamp(1rem, 0.9rem + 0.4cqw, 1.1rem);
   }
 
   /* Accordion – większe klik-zony na dużych ekranach */
