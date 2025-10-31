@@ -129,7 +129,7 @@ header a {
 
 .product-price {
     font-size: 1.2rem;
-    font-weight: bold;
+    font-weight: 500;
     color: #e74c3c;
     margin-bottom: 0.5rem; /* 8px -> 0.5rem */
 }
