@@ -34,7 +34,7 @@
     const csvPath = brand ? `brand/brand_${brand}.csv` : await detectBrandCSV();
     const cacheKey = `productData_${brand || 'default'}`;
     const cacheTimestampKey = `productData_${brand || 'default'}_timestamp`;
-    const cacheDuration = 24 * 60 * 60 * 1000; // 24 godziny
+    const cacheDuration = 1 * 1 * 1 * 1000; // 24 godziny
 
     try {
       let products;
