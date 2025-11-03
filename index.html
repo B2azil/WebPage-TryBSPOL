@@ -550,7 +550,7 @@
       }
       const cached = localStorage.getItem('storesData');
       const cacheTime = localStorage.getItem('storesCacheTime');
-      const cacheDuration = 6 *  60 * 60 * 1000; // 6 godzin w milisekundach
+      const cacheDuration = 0 *  60 * 60 * 1000; // 6 godzin w milisekundach
       if (cached && cacheTime && (Date.now() - parseInt(cacheTime) < cacheDuration)) {
         // Cache jest świeży, użyj go
         try {
