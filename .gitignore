@@ -1,2 +1,3 @@
 # Ignoruj wszystko w folderze logs, ale zachowaj folder
 # img/*
+.env
