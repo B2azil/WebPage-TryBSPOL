@@ -310,7 +310,9 @@ footer .copyright {
   max-width: 80%;
 }
 
-.hero p { font-size: 1.3rem; }
+.hero p { 
+  font-size: clamp(1.1rem, 1.5vw, 1.5rem); 
+}
 
 .hero .logo {
   width: 15rem;
@@ -327,7 +329,7 @@ footer .copyright {
   background-color: var(--brand);
   cursor: pointer;
   margin-top: 0.5em;
-  font-size: 1.2em;
+  font-size: 1.2em
 }
 
 .hero-cta:hover {
@@ -339,7 +341,7 @@ footer .copyright {
 }
 
 .hero-text h1 {
-  font-size: 2.5em;
+  font-size: clamp(1.8rem, 3vw, 3.5rem);
   margin-bottom: 0.5em;
 }
 
