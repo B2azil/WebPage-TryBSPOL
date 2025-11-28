@@ -573,7 +573,7 @@ footer .copyright {
     - 1 kolumna na telefonie
     - 2-4 kolumny na większych ekranach
   */
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: var(--space-3);
   text-align: center;
 }
