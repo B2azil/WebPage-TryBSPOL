@@ -162,18 +162,6 @@ section {
 }
 
 /* ========== Components: grids, tiles, buy-links ========== */
-.portfolio-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-}
-
-.portfolio-grid img {
-  background: #fff;
-  padding: 10px;
-  border-radius: var(--radius-m);
-}
-
 .buy-links {
   display: flex;
   flex-wrap: wrap;
@@ -261,18 +249,6 @@ footer .copyright {
 /* ========== Header/logo, containers ========== */
 .logo { width: 100px; }
 
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* ========== Section: black band ========== */
-#cont {
-  padding: 2vh 0;
-  background-color: #000;
-}
-
 /* ========== Hero ========== */
 .hero {
   position: relative;
@@ -312,11 +288,6 @@ footer .copyright {
 
 .hero p { 
   font-size: clamp(1.1rem, 1.5vw, 1.5rem); 
-}
-
-.hero .logo {
-  width: 15rem;
-  margin-bottom: 3rem;
 }
 
 .hero-cta {
@@ -422,75 +393,6 @@ footer .copyright {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
-}
-
-/* ========== Logos slider (logos1) ========== */
-.logos1 {
-  --gap: clamp(24px, 4vw, 50px);
-  --duration: 20s;
-}
-
-.logos1-mask {
-  overflow: hidden;
-  width: 100%;
-  position: relative;
-}
-
-.logos1-track {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-  animation: logos-scroll var(--duration) linear infinite;
-}
-
-.logos1-mask:hover .logos1-track {
-  animation-play-state: paused;
-}
-
-.logos1-group {
-  display: flex;
-  align-items: center;
-  gap: var(--gap);
-  flex: 0 0 auto;
-  margin: 14px 0;
-}
-
-.logos1-group img {
-  height: clamp(60px, 10vw, 100px);
-  width: auto;
-  display: block;
-  vertical-align: middle;
-  flex: 0 0 auto;
-  filter: grayscale(100%) opacity(0.85);
-  transition: filter 0.2s ease, transform 0.2s ease;
-}
-
-.logos1-group img:hover {
-  filter: grayscale(0%) opacity(1);
-  transform: scale(1.04);
-}
-
-.logos1-group a {
-  display: flex;
-  align-items: center;
-  flex: 0 0 auto;
-  margin-right: var(--gap);
-}
-
-.logos1-group a:hover img {
-  filter: grayscale(0%) opacity(1);
-  transform: scale(1.40);
-}
-
-@keyframes logos-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-
-/* Motion preferences */
-@media (prefers-reduced-motion: reduce) {
-  .logos1-track { animation: none; }
-  .brand-tile { animation: none; transition: none; }
 }
 
 /* ========== Logo carousel (second) ========== */
