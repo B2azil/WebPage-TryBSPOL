@@ -16,22 +16,28 @@
 </head>
 <body>
     
-<header id="main-header">
+<header id="main-header" class="header">
   <a href="https://b2azil.github.io/WebPage-TryBSPOL/" aria-label="Wróć na początek strony">
     <img src="main/img/bspolska.png" alt="Logo B&S Polska" class="logo">
   </a>
+  
+  <!-- Overlay dla mobilnego menu -->
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+  
   <nav class="desktop-nav">
     <a href="#about" class="nav-link">O nas</a>
     <a href="#portfolio" class="nav-link">Portfolio</a>
     <a href="#buy" class="nav-link">Gdzie kupić</a>
     <a href="#contact" class="nav-link">Kontakt</a>
   </nav>
-  <button class="hamburger" aria-label="Otwórz menu" aria-expanded="false">
+  
+  <button class="hamburger" id="hamburgerBtn" aria-label="Otwórz menu" aria-expanded="false" aria-controls="mobileNav">
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
     <span class="hamburger-line"></span>
   </button>
-  <nav class="mobile-nav">
+  
+  <nav class="mobile-nav canvas-style" id="mobileNav" aria-hidden="true">
     <a href="#about" class="nav-link">O nas</a>
     <a href="#portfolio" class="nav-link">Portfolio</a>
     <a href="#buy" class="nav-link">Gdzie kupić</a>
@@ -40,40 +46,90 @@
 
   <script>
     // Hamburger toggle
-    const hamburger = document.querySelector('.hamburger');
-    const mobileNav = document.querySelector('.mobile-nav');
-    const navLinks = document.querySelectorAll('.nav-link');
-    
+    const hamburger = document.querySelector('#hamburgerBtn');
+    const mobileNav = document.querySelector('#mobileNav');
+    const menuOverlay = document.querySelector('#menuOverlay');
+    const navLinks = document.querySelectorAll('.mobile-nav .nav-link');
+    const header = document.querySelector('#main-header');
 
-    hamburger.addEventListener('click', () => {
-      mobileNav.classList.toggle('open');
-      hamburger.setAttribute('aria-expanded', hamburger.getAttribute('aria-expanded') === 'false' ? 'true' : 'false');
+    // Funkcja otwierania menu
+    function openMenu() {
+      mobileNav.classList.add('open');
+      menuOverlay.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      mobileNav.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden'; // Zablokuj scroll
+    }
+
+    // Funkcja zamykania menu
+    function closeMenu() {
+      mobileNav.classList.remove('open');
+      menuOverlay.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      mobileNav.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = ''; // Odblokuj scroll
+    }
+
+    // Toggle menu na klik hamburger
+    hamburger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (mobileNav.classList.contains('open')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     });
 
-    // Zamknij menu po kliknięciu w link
+    // Zamknij menu po kliknięciu na link
     navLinks.forEach(link => {
       link.addEventListener('click', () => {
-        // Usuń klasę active ze wszystkich linków i dodaj do klikniętego
         navLinks.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
-
-        // Zamknij menu mobilne
-        mobileNav.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
+        closeMenu();
       });
     });
 
-    // Zmniejsz header na scroll
+    // Zamknij menu po kliknięciu na overlay
+    menuOverlay.addEventListener('click', () => {
+      closeMenu();
+    });
+
+    // Zamknij menu po kliknięciu poza menu i hamburger
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.mobile-nav') && 
+          !e.target.closest('#hamburgerBtn') &&
+          mobileNav.classList.contains('open')) {
+        closeMenu();
+      }
+    });
+
+    // Zmniejsz header na scroll (efekt glassmorphic)
     window.addEventListener('scroll', () => {
-      const header = document.getElementById('main-header');
       if (window.scrollY > 50) {
         header.classList.add('scrolled');
       } else {
         header.classList.remove('scrolled');
       }
     });
+
+    // Obsługa prefers-reduced-motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      document.documentElement.style.setProperty('--transition-speed', '0s');
+    } else {
+      document.documentElement.style.setProperty('--transition-speed', '0.3s');
+    }
+
+    // Zamknij menu przy zmianę wielkości okna (z desktop na mobile)
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && mobileNav.classList.contains('open')) {
+        closeMenu();
+      }
+    });
   </script>
 </header>
+
+
 
 
 <section id="hero-section">
@@ -224,7 +280,6 @@
     <h2>O nas</h2>
     <p>B&S Polska oferuje dobrej jakości i w umiarkowanych cenach tekstylia szkolne. Jest wieloletnim, doświadczonym i rzetelnym dostawcą marek licencyjnych jak i własnych.</p>
 </section>
-
 
 <section id="atuty" class="atuty">
   <div class="atuty-container">
