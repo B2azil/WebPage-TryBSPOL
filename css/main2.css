@@ -40,106 +40,7 @@ img {
   display: block;
 }
 
-/* ========== Layout: header, sections ========== */
-header {
-  background: var(--bg-900);
-  color: var(--text-inverse);
-  padding: var(--space-2) var(--space-3);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky; /* Sticky header */
-  top: 0;
-  z-index: 1000;
-  transition: padding 0.3s ease; /* Dla efektu zmniejszania */
-}
 
-header.scrolled {
-  padding: var(--space-1) var(--space-3); /* Mniejszy po scrollu */
-}
-
-header nav a.nav-link {
-  color: var(--text-inverse);
-  margin-inline-start: 20px; 
-  text-decoration: none;
-  transition: color 0.2s ease, transform 0.2s ease;
-  position: relative; /* Dla underline animacji */
-}
-
-header nav a.nav-link:hover {
-  color: var(--brand); /* Zmiana na brand color */
-  transform: scale(1.05); /* Lekkie skalowanie */
-}
-
-header nav a.nav-link::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -4px;
-  left: 0;
-  background-color: var(--brand);
-  transition: width 0.3s ease;
-}
-
-header nav a.nav-link:hover::after {
-  width: 100%; /* Animowany underline */
-}
-
-header nav a.nav-link.active {
-  font-weight: bold; /* Aktywny link */
-}
-
-.hamburger {
-  display: none; /* Ukryty na desktop */
-  background: none;
-  border: none;
-  cursor: pointer;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 24px;
-  width: 30px;
-}
-
-.hamburger-line {
-  background: var(--text-inverse);
-  height: 3px;
-  width: 100%;
-  transition: all 0.3s ease;
-}
-
-.mobile-nav {
-  display: none; /* Ukryta domyślnie */
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: var(--bg-900);
-  flex-direction: column;
-  padding: var(--space-2);
-  z-index: 999;
-}
-
-.mobile-nav a {
-  margin: var(--space-1) 0;
-  text-align: center;
-}
-
-/* Media queries dla mobile */
-@media (max-width: 768px) {
-  .desktop-nav {
-    display: none; /* Ukryj desktop nav na mobile */
-  }
-  .hamburger {
-    display: flex; /* Pokaż hamburger */
-  }
-  .mobile-nav.open {
-    display: flex; /* Pokaż po kliknięciu */
-  }
-  header {
-    padding: var(--space-1) var(--space-2); /* Mniejszy na mobile */
-  }
-}
 
 
 section {
@@ -253,7 +154,7 @@ footer .copyright {
 .hero {
   position: relative;
   overflow: hidden;
-  height: 70vh;
+  height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
