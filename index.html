@@ -17,12 +17,10 @@
 <body>
     
 <header id="main-header" class="header">
+  <div class="navbar">
   <a href="https://b2azil.github.io/WebPage-TryBSPOL/" aria-label="Wróć na początek strony">
     <img src="main/img/bspolska.png" alt="Logo B&S Polska" class="logo">
   </a>
-  
-  <!-- Overlay dla mobilnego menu -->
-  <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
   
   <nav class="desktop-nav">
     <a href="#about" class="nav-link">O nas</a>
@@ -32,10 +30,14 @@
   </nav>
   
   <button class="hamburger" id="hamburgerBtn" aria-label="Otwórz menu" aria-expanded="false" aria-controls="mobileNav">
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
-    <span class="hamburger-line"></span>
+    <span class="hamburger-box">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </span>
   </button>
+  </div>
+  </header>
   
   <nav class="mobile-nav" id="mobileNav" aria-hidden="true">
     <a href="#about" class="nav-link">O nas</a>
@@ -44,6 +46,8 @@
     <a href="#contact" class="nav-link">Kontakt</a>
   </nav>
 
+  <!-- Overlay dla mobilnego menu -->
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
   <script>
     // Hamburger toggle
     const hamburger = document.querySelector('#hamburgerBtn');
@@ -127,7 +131,6 @@
       }
     });
   </script>
-</header>
 
 <section id="hero-section">
   <div class="hero" id="hero">
@@ -644,7 +647,7 @@
       }
       const cached = localStorage.getItem('storesData');
       const cacheTime = localStorage.getItem('storesCacheTime');
-      const cacheDuration = 0 *  60 * 60 * 1000; // 6 godzin w milisekundach
+      const cacheDuration = 6 *  60 * 60 * 1000; // 6 godzin w milisekundach
       if (cached && cacheTime && (Date.now() - parseInt(cacheTime) < cacheDuration)) {
         // Cache jest świeży, użyj go
         try {
@@ -663,8 +666,8 @@
 
       // Użyj PapaParse do pobrania i parsowania CSV
       Papa.parse(csvPath, {
-        download: true, // Pobiera plik jeśli jest zdalny; dla lokalnego też działa
-        header: true,   // Pierwsza linia to nagłówki
+        download: true, // Pobiera plik jeśli jest zdalny;
+        header: true, // Użyj pierwszej linii jako nagłówki
         skipEmptyLines: true,
         complete: function(results) {
           const buyLinks = document.querySelector('.buy-links');
@@ -711,24 +714,29 @@
         
         if (row.image && row.link && isValidUrl(row.link)) {
           validRows++;
-          const span = document.createElement('span');
-          span.className = 'container';
 
+          // 1. TWORZYMY GŁÓWNY ELEMENT LINKU <a>
           const a = document.createElement('a');
           a.href = sanitizedLink;
           a.target = '_blank';
           a.rel = 'noopener noreferrer';
           a.setAttribute('aria-label', `Przejdź do sklepu ${row.alt || row.link}`);
 
+          // 2. TWORZYMY WEWNĘTRZNY ELEMENT WIZUALNY <span>
+          const span = document.createElement('span');
+          span.className = 'container'; // Dodajemy klasę stylowania (neuromorphism)
+          span.setAttribute('role', 'presentation'); // Oznaczamy span jako prezentacyjny (nieklikalny dla czytników)
+
+          // 3. TWORZYMY ELEMENT OBRAZU <img>
           const img = document.createElement('img');
           img.src = isValidUrl(sanitizedImage) ? sanitizedImage : imageBasePath + sanitizedImage;
           img.alt = row.alt || `Logo sklepu ${row.link}`; //  Domyślny alt jeśli brak zdjęcia
           img.setAttribute('loading', 'lazy'); 
-          img.setAttribute('aria-hidden', 'true');
 
-          a.appendChild(img);
-          span.appendChild(a);
-          buyLinks.appendChild(span);
+          // 4. SKŁADAMY WSZYSTKO RAZEM
+          span.appendChild(img);
+          a.appendChild(span);
+          buyLinks.appendChild(a);
         } else {
           console.warn('Nieprawidłowy wiersz w CSV:', row );
         }
