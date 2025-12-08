@@ -246,9 +246,15 @@ a.back-button:hover {
   font-weight: 500;
 }
 
-.main-shop img{
-  height: 3rem;
+.main-shop img {
+  /*
+  Wysokość:
+  MIN: 2rem (minimalna dla małych ekranów)
+  PREFEROWANA: 5vw (5% szerokości viewportu - to jest klucz do skalowania)
+  */
+  height: clamp(2rem, 5vw, 3rem);
   vertical-align: middle;
+  width: auto;
 }
 
 .main-shop {
@@ -256,6 +262,7 @@ a.back-button:hover {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .main-shop h5{
