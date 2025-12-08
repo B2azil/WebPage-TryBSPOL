@@ -15,10 +15,73 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body>
+
+  <!-- skrypt służący do ukrywania # w linku i lepszego przewijania na stronie -->
+  <script>
+// Płynne przewijanie do sekcji + korekta na fixed header
+document.addEventListener("DOMContentLoaded", function () {
+  const headerHeight = document.querySelector("header").offsetHeight + 0; // Dodatkowy offset, jeśli potrzebny
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function (e) {
+      const targetId = this.getAttribute("href");
+
+      // Pomijamy puste # i #top
+      if (targetId === "#" || targetId === "#top") return;
+
+      const targetElement = document.querySelector(targetId);
+
+      if (targetElement) {
+        e.preventDefault();
+
+        // Płynne przewijanie z offsetem (żeby nie chowało się pod headerem)
+        window.scrollTo({
+          top: targetElement.offsetTop - headerHeight,
+          behavior: "smooth"
+        });
+
+        // Opcjonalnie: dodaj klasę .active do aktywnego linku
+        document.querySelectorAll(".nav-link").forEach(link => link.classList.remove("active"));
+        this.classList.add("active");
+
+        // Zamknij menu mobilne po kliknięciu (jeśli jest otwarte)
+        const mobileNav = document.getElementById("mobileNav");
+        const hamburger = document.getElementById("hamburgerBtn");
+        if (mobileNav && mobileNav.classList.contains("open")) {
+          mobileNav.classList.remove("open");
+          document.getElementById("menuOverlay").classList.remove("open");
+          hamburger.setAttribute("aria-expanded", "false");
+          document.body.style.overflow = "";
+        }
+      }
+    });
+  });
+
+  window.addEventListener("scroll", function () {
+    let current = "";
+    const sections = document.querySelectorAll("section[id]");
+
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop - headerHeight - 100;
+      const sectionHeight = section.offsetHeight;
+      if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+        current = section.getAttribute("id");
+      }
+    });
+
+    document.querySelectorAll(".nav-link").forEach(link => {
+      link.classList.remove("active");
+      if (link.getAttribute("href") === `#${current}`) {
+        link.classList.add("active");
+      }
+    });
+  });
+});
+</script>
     
 <header id="main-header" class="header">
   <div class="navbar">
-  <a href="https://b2azil.github.io/WebPage-TryBSPOL/" aria-label="Wróć na początek strony">
+  <a href="/" aria-label="Wróć na początek strony">
     <img src="main/img/bspolska.png" alt="Logo B&S Polska" class="logo">
   </a>
   
@@ -767,5 +830,33 @@
         <small> &#169; <script>document.write(new Date().getFullYear())</script> B&S Polska. Wszelkie prawa zastrzeżone.</small>
     </div>
 </footer>
+
+<!-- Strzałka wróć do góry -->
+<button 
+  id="backToTop" 
+  aria-label="Wróć na górę strony" 
+  title="Wróć na górę">
+  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 19V5M5 12l7-7 7 7"/>
+  </svg>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("backToTop");
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 400) {
+        btn.classList.add("visible");
+      } else {
+        btn.classList.remove("visible");
+      }
+    });
+
+    btn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+</script>
+</button>
+
 </body>
 </html>
