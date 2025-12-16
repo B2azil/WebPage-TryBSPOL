@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Produkty marki - B&S Polska | Tekstylia szkolne</title>
+    <meta name="description"
+        content="Przeglądaj pełną ofertę produktów B&S Polska. Plecaki, torby i akcesoria szkolne z licencjami Legia Warszawa, Lech Poznań, Pogoń Szczecin oraz marki własne.">
+    <link rel="icon" type="image/png" href="main/img/fav-icon-BSpolska.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- SEO -->
+    <link rel="canonical" href="http://bspolska.com.pl/brand.html">
+    <meta name="robots" content="index, follow">
+
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdn.jsdelivr.net 'sha256-vvt4KWwuNr51XfE5m+hzeNEGhiOfZzG97ccfqGsPwvE=';
+        style-src 'self';
+        img-src 'self' data: https:;
+        connect-src 'self';
+    ">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Produkty B&S Polska - Tekstylia szkolne">
+    <meta property="og:description"
+        content="Pełna oferta plecaków, toreb i akcesoriów szkolnych z licencjami klubów piłkarskich.">
+    <meta property="og:image" content="http://bspolska.com.pl/main/img/bspolska.png">
+    <meta property="og:locale" content="pl_PL">
+
+    <link rel="stylesheet" href="css/brand.css">
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"
+        integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Główny skrypt jako moduł ES6 -->
+    <script type="module" src="js/brand.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <nav aria-label="Nawigacja główna">
+            <a href="/" aria-label="Powrót do strony głównej B&S Polska">&larr; Powrót</a>
+        </nav>
+        <a href="/">
+            <img src="main/img/bspolska.png" alt="Logo B&S Polska - dystrybutor tekstyliów szkolnych"
+                class="brand-logo">
+        </a>
+    </header>
+
+    <main>
+        <h1 class="visually-hidden" id="pageTitle">Produkty B&S Polska</h1>
+
+        <div class="search-bar">
+            <label for="search" class="visually-hidden">Szukaj produktu</label>
+            <input type="search" id="search" placeholder="Szukaj produktu..." aria-describedby="searchHint">
+            <span id="searchHint" class="visually-hidden">Wpisz nazwę produktu aby filtrować listę</span>
+        </div>
+
+        <nav class="category-bar" id="categoryBar" aria-label="Kategorie produktów">
+            <!-- Kategorie z CSV -->
+        </nav>
+
+        <section class="product-grid" id="productList" aria-label="Lista produktów">
+            <!-- Produkty z CSV -->
+            <p class="loading">Ładowanie produktów...</p>
+        </section>
+    </main>
+
+</body>
+
+</html>

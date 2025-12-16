@@ -1,0 +1,37 @@
+/* ========================================
+   DESIGN TOKENS - Zmienne CSS
+   ======================================== */
+
+:root {
+    /* Kolory */
+    --bg-900: #333;
+    --text-inverse: #fff;
+    --brand: hsl(132, 100%, 38%);
+    --brand-700: hsl(132, 100%, 28%);
+    --footer-border: #555;
+
+    /* Zaokrąglenia */
+    --radius-s: 5px;
+    --radius-m: 8px;
+    --radius-l: 12px;
+
+    /* Odstępy */
+    --space-1: 0.5rem;
+    --space-2: 1rem;
+    --space-3: 1.2rem;
+    --space-4: 2rem;
+
+    /* Cienie */
+    --shadow-1: 0 4px 8px rgba(0, 0, 0, 0.12);
+    --shadow-2: 0 8px 16px rgba(0, 0, 0, 0.25);
+
+    /* Glassmorphism */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-bg2: rgba(255, 255, 255, 0.015);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-blur-default: 18px;
+    --glass-blur-hover: 10px;
+
+    /* Animacje */
+    --transition-speed: 0.3s;
+}

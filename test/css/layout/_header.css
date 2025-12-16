@@ -1,0 +1,122 @@
+/* ========================================
+   HEADER - Nagłówek główny
+   Glassmorphism + Navbar
+   ======================================== */
+
+header {
+    /* Glassmorphism effect */
+    background: var(--glass-bg), var(--glass-bg2);
+    backdrop-filter: blur(var(--glass-blur-default));
+    -webkit-backdrop-filter: blur(var(--glass-blur-default));
+    border-bottom: 1px solid var(--glass-border);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+
+    color: #fff;
+    padding: var(--space-2) var(--space-3);
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+    transition: backdrop-filter 0.4s ease, -webkit-backdrop-filter 0.4s ease;
+}
+
+/* Efekt przy scrollu */
+header.scrolled {
+    padding: var(--space-1) var(--space-3);
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Reduce blur on hover */
+header:hover {
+    backdrop-filter: blur(var(--glass-blur-hover));
+    -webkit-backdrop-filter: blur(var(--glass-blur-hover));
+}
+
+/* Navbar container */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1400px;
+    padding: 0 1vh;
+}
+
+/* Desktop navigation */
+.desktop-nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 0 20px;
+}
+
+/* Navigation links */
+header nav a.nav-link {
+    color: var(--text-inverse);
+    margin-inline-start: 20px;
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+    position: relative;
+    padding: 8px 16px;
+    border-radius: var(--radius-s);
+}
+
+header nav a.nav-link:hover {
+    color: var(--brand-700);
+    transform: scale(1.15);
+    background: rgba(255, 255, 255, 0.65);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+    text-shadow: 0 0 12px rgba(0, 255, 255, .45);
+}
+
+header nav a.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    color: var(--brand);
+    transition: width 0.3s ease;
+}
+
+header nav a.nav-link:hover::after {
+    width: 100%;
+}
+
+header nav a.nav-link.active {
+    font-weight: bold;
+}
+
+/* Logo */
+.logo {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
+    width: 100px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .desktop-nav {
+        display: none;
+    }
+
+    header {
+        padding: var(--space-1) var(--space-2);
+    }
+
+    .navbar {
+        padding: 0 var(--space-2);
+    }
+}

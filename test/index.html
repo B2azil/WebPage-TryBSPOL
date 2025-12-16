@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>B&S Polska - tekstylia szkolne, licencjonowane marki i własne kolekcje</title>
+  <link rel="icon" type="image/png" href="main/img/fav-icon-BSpolska.png">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description"
+    content="B&S Polska - dystrybutor wysokiej jakości tekstyliów szkolnych z markami licencyjnymi. Odkryj nasze portfolio i znajdź produkty w najlepszych sklepach.">
+
+  <!-- SEO: Canonical URL -->
+  <link rel="canonical" href="http://bspolska.com.pl/">
+  <meta name="robots" content="index, follow">
+
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'sha256-vvt4KWwuNr51XfE5m+hzeNEGhiOfZzG97ccfqGsPwvE=';
+    style-src 'self' https://cdnjs.cloudflare.com;
+    img-src 'self' data: https:;
+    font-src 'self' https://cdnjs.cloudflare.com;
+    connect-src 'self';
+  ">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="http://bspolska.com.pl/">
+  <meta property="og:title" content="B&S Polska - tekstylia szkolne, licencjonowane marki">
+  <meta property="og:description"
+    content="Dystrybutor wysokiej jakości tekstyliów szkolnych z markami licencyjnymi: Legia Warszawa, Lech Poznań, Pogoń Szczecin.">
+  <meta property="og:image" content="http://bspolska.com.pl/main/img/bspolska.png">
+  <meta property="og:locale" content="pl_PL">
+  <meta property="og:site_name" content="B&S Polska">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="B&S Polska - tekstylia szkolne">
+  <meta name="twitter:description" content="Dystrybutor tekstyliów szkolnych z markami licencyjnymi.">
+  <meta name="twitter:image" content="http://bspolska.com.pl/main/img/bspolska.png">
+
+  <!-- Structured Data: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "B&S Polska",
+    "alternateName": "B&S Polska s.c.",
+    "url": "http://bspolska.com.pl",
+    "logo": "http://bspolska.com.pl/main/img/bspolska.png",
+    "description": "Dystrybutor wysokiej jakości tekstyliów szkolnych z markami licencyjnymi",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Ul. Batorego 3",
+      "addressLocality": "Topolin",
+      "postalCode": "05-083",
+      "addressCountry": "PL"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+48-530-288-284",
+      "contactType": "customer service",
+      "email": "bspolska@bspolska.com.pl",
+      "availableLanguage": "Polish"
+    },
+    "sameAs": [
+      "https://allegro.pl/uzytkownik/BandSPolska",
+      "https://www.empik.com/sklepy/b-s-polska,3078,m"
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"
+    integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- Główny skrypt aplikacji jako moduł ES6 -->
+  <script type="module" src="js/main.js"></script>
+</head>
+
+<body>
+
+  <header id="main-header" class="header">
+    <div class="navbar">
+      <a href="/" aria-label="Wróć na początek strony">
+        <img src="main/img/bspolska.png" alt="Logo B&S Polska" class="logo">
+      </a>
+
+      <nav class="desktop-nav">
+        <a href="#about" class="nav-link">O nas</a>
+        <a href="#portfolio" class="nav-link">Portfolio</a>
+        <a href="#buy" class="nav-link">Gdzie kupić</a>
+        <a href="#contact" class="nav-link">Kontakt</a>
+      </nav>
+
+      <button class="hamburger" id="hamburgerBtn" aria-label="Otwórz menu" aria-expanded="false"
+        aria-controls="mobileNav">
+        <span class="hamburger-box">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <nav class="mobile-nav" id="mobileNav" aria-hidden="true">
+    <a href="#about" class="nav-link">O nas</a>
+    <a href="#portfolio" class="nav-link">Portfolio</a>
+    <a href="#buy" class="nav-link">Gdzie kupić</a>
+    <a href="#contact" class="nav-link">Kontakt</a>
+  </nav>
+
+  <!-- Overlay dla mobilnego menu -->
+  <div class="menu-overlay" id="menuOverlay" aria-hidden="true"></div>
+
+  <section id="hero-section">
+    <div class="hero" id="hero">
+      <div class="hero-bg" id="bg1"></div> <!-- Górny (aktywny) -->
+      <div class="hero-bg" id="bg2"></div> <!-- Dolny (następny) -->
+
+      <div class="hero-content"> <!-- Kontener na treść, na wierzchu -->
+        <div class="hero-text">
+          <h1>B&S Polska - Wysokiej jakości tekstylia szkolne</h1>
+          <p>Odkryj nasze podukty licencyjne.</p>
+        </div>
+        <img id="hero-img" class="visually-hidden" src="" alt="Initial description">
+        <!-- Ukryty obraz dla dostępności -->
+        <a href="#portfolio" class="hero-cta">Przeglądaj marki</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="about">
+    <h2>O nas</h2>
+    <p>B&S Polska oferuje dobrej jakości i w umiarkowanych cenach tekstylia szkolne. Jest wieloletnim, doświadczonym i
+      rzetelnym dostawcą marek licencyjnych jak i własnych.</p>
+  </section>
+
+  <section id="atuty" class="atuty">
+    <div class="atuty-container">
+      <h2>Dlaczego nasze produkty?</h2>
+      <p class="atuty-subtitle">Nasza obietnica to więcej niż słowa. To realne wartości, które znajdziesz w każdym
+        produkcie.</p>
+
+      <div class="atuty-grid">
+
+        <div class="atut-card">
+          <i class="fa fa-shield" aria-hidden="true"></i>
+          <h3>Jakość i Bezpieczeństwo</h3>
+          <p>Używamy certyfikowanych materiałów (np. 300D RECYCLEX), ekologicznych i bezpiecznych. Dajemy Ci pewność
+            najlepszego wyboru.</p>
+        </div>
+
+        <div class="atut-card">
+          <i class="fa fa-star" aria-hidden="true"></i>
+          <h3>Oficjalne Licencje</h3>
+          <p>Posiadamy oficjalne licencje: <br>Legia Warszawa, <br>Lech Poznań, <br>Pogoń Szczecin. <br>Jako rzetelny
+            partner, gwarantujemy 100% autentyczności. .</p>
+        </div>
+
+        <div class="atut-card">
+          <i class="fa fa-wrench" aria-hidden="true"></i>
+          <h3>Niezawodność i Trwałość</h3>
+          <p>Projektujemy z myślą o energii dzieci. Mocne szwy, wytrzymałe zamki i solidne tkaniny to nasz absolutny
+            standard.</p>
+        </div>
+
+        <div class="atut-card">
+          <i class="fa fa-paint-brush" aria-hidden="true"></i>
+          <h3>Marki Własne</h3>
+          <p>Oprócz Licencjonowanych produktów, tworzymy własne, oryginalne kolekcje <br> South <br>Tech
+          </p>
+        </div>
+
+        <div class="atut-card">
+          <i class="fa fa-quora" aria-hidden="true"></i>
+          <h3>Super Sprzedawca</h3>
+          <p>Jako sprzedawca na <br>Allegro.pl <br>Empik.com <br>czy <br>OLX.pl <br>mamy najwyższe noty jakości ,
+            rzetelności i uczciwości kupieckiej. </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section id="portfolio">
+    <h2>Portfolio</h2>
+    <div class="brand-grid">
+      <p class="loading">Ładowanie marek...</p>
+    </div>
+  </section>
+
+  <section id="carousel">
+    <div class="logo-carousel">
+      <div class="logo-track" id="logoTrack"></div>
+    </div>
+  </section>
+
+  <section id="buy" class="buy">
+    <h2>Gdzie kupić</h2>
+    <div class="buy-links"></div>
+  </section>
+
+  <footer id="contact" role="contentinfo" aria-label="Informacje kontaktowe">
+    <div class="contact">
+      <h4>Kontakt</h4>
+      <p><i class="fa fa-envelope" aria-hidden="true" title="Adres email"></i>Email: <a
+          href="mailto:bspolska@bspolska.com.pl">bspolska@bspolska.com.pl</a></p>
+      <p><i class="fa fa-phone" aria-hidden="true" title="numer telefonu"></i>Tel/sms: <a href="tel:+48530288284">530
+          288 284</a></p>
+    </div>
+    <div class="address">
+      <h4>B & S Polska s.c.</h4>
+      <p><i class="fas fa-map-marker-alt"></i> Ul. Batorego 3, 05-083 Topolin</p>
+      <p><i class="nip"></i> NIP : 1181863247</p>
+    </div>
+    <div class="copyright">
+      <small> &#169;
+        <span id="currentYear">2025</span> B&S Polska. Wszelkie prawa zastrzeżone.
+      </small>
+    </div>
+  </footer>
+
+  <!-- Strzałka wróć do góry -->
+  <button id="backToTop" aria-label="Wróć na górę strony" title="Wróć na górę">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 19V5M5 12l7-7 7 7" />
+    </svg>
+  </button>
+
+</body>
+
+</html>

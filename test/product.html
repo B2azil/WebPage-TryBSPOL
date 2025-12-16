@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>B&S Polska - Szczegóły produktu</title>
+  <link rel="icon" type="image/png" href="main/img/fav-icon-BSpolska.png">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Szczegóły produktu B&S Polska - tekstylia szkolne wysokiej jakości.">
+
+  <!-- SEO -->
+  <link rel="canonical" id="canonical-link" href="https://bspolska.com.pl/product.html">
+  <meta name="robots" content="index, follow">
+
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'sha256-vvt4KWwuNr51XfE5m+hzeNEGhiOfZzG97ccfqGsPwvE=';
+    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;
+    img-src 'self' data: https:;
+    font-src 'self' https://cdnjs.cloudflare.com;
+    connect-src 'self' https://cdnjs.cloudflare.com;
+  ">
+
+  <!-- Open Graph (będzie dynamicznie aktualizowane przez JS) -->
+  <meta property="og:type" content="product">
+  <meta property="og:title" content="Produkt B&S Polska">
+  <meta property="og:description" content="Tekstylia szkolne wysokiej jakości.">
+  <meta property="og:image" content="http://bspolska.com.pl/main/img/bspolska.png">
+  <meta property="og:locale" content="pl_PL">
+  <meta property="og:site_name" content="B&S Polska">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Structured Data: Product (JSON-LD wypełniany dynamicznie przez JS) -->
+  <script type="application/ld+json" id="product-schema">{}</script>
+
+  <link rel="stylesheet" href="css/product.css">
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"
+    integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"
+    integrity="sha512-jB0TkTBeQC9ZSkBqDhdmfTv1qdfbWpGE72yJ/01Srq6hEzZIz2xkz1e57p9ai7IeHMwEG7HpzG6NdptChif5Pg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- Główny skrypt jako moduł ES6 -->
+  <script type="module" src="js/product.js"></script>
+</head>
+
+<body>
+
+  <main>
+    <article class="product-container" id="productDetails" itemscope itemtype="https://schema.org/Product">
+      <p>Ładowanie danych produktu...</p>
+    </article>
+  </main>
+
+</body>
+
+</html>

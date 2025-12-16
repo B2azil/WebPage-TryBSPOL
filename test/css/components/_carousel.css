@@ -1,0 +1,39 @@
+/* ========================================
+   CAROUSEL - Karuzela logotypów
+   ======================================== */
+
+.logo-carousel {
+    overflow: hidden;
+    width: 100%;
+    background: #fff;
+    padding: 16px 0;
+    position: relative;
+}
+
+.logo-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    will-change: transform;
+}
+
+.logo-track img {
+    height: clamp(40px, 5vw, 60px);
+    width: auto;
+    margin-right: clamp(20px, 3vw, 30px);
+    filter: grayscale(100%) opacity(0.85);
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.logo-track img:hover {
+    filter: grayscale(0%) opacity(1);
+    transform: scale(1.25);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .logo-track img {
+        height: 40px;
+        margin-right: 20px;
+    }
+}

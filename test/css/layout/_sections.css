@@ -1,0 +1,22 @@
+/* ========================================
+   SECTIONS - Ogólne style sekcji
+   ======================================== */
+
+section {
+    padding: var(--space-4) 10%;
+}
+
+#hero-section {
+    padding: 0;
+}
+
+.about,
+.portfolio,
+.buy {
+    background: #f9f9f9;
+    margin-bottom: 1rem;
+}
+
+.buy h2 {
+    padding-bottom: 2rem;
+}

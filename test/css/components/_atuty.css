@@ -1,0 +1,60 @@
+/* ========================================
+   ATUTY - Sekcja "Dlaczego nasze produkty"
+   ======================================== */
+
+.atuty {
+    background: #f9f9f9;
+    text-align: center;
+    padding: var(--space-4) 10%;
+}
+
+.atuty h2 {
+    font-size: 1.3rem;
+    margin-bottom: var(--space-1);
+}
+
+.atuty-subtitle {
+    font-size: 1.1rem;
+    color: #555;
+    max-width: 700px;
+    margin: 0 auto var(--space-4) auto;
+}
+
+.atuty-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-3);
+    text-align: center;
+}
+
+/* Karta atutu */
+.atut-card {
+    background: #fff;
+    padding: var(--space-3);
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow-1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.atut-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-2);
+}
+
+.atut-card i {
+    color: var(--brand);
+    font-size: 3rem;
+    margin-bottom: var(--space-2);
+}
+
+.atut-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: var(--space-1);
+    color: var(--bg-900);
+}
+
+.atut-card p {
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+}

@@ -1,0 +1,79 @@
+/* ========================================
+   FOOTER - Stopka
+   ======================================== */
+
+footer {
+    background: var(--bg-900);
+    color: var(--text-inverse);
+    padding: var(--space-4) 10%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    font-family: 'Roboto', sans-serif;
+}
+
+footer .contact,
+footer .address {
+    margin-bottom: 20px;
+    min-width: 200px;
+    color: rgb(204, 204, 204);
+}
+
+footer h4 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--footer-border);
+    padding-bottom: 5px;
+}
+
+footer p {
+    font-size: 1rem;
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+}
+
+footer p i {
+    margin-right: 10px;
+}
+
+footer p a {
+    color: var(--brand);
+    text-decoration: none;
+    margin-left: 0.5em;
+    transition: color 0.3s ease;
+}
+
+footer p a:hover {
+    color: var(--brand-700);
+}
+
+footer .copyright {
+    width: 100%;
+    text-align: center;
+    padding-top: 10px;
+    font-size: 0.9rem;
+    color: #ccc;
+    border-top: 1px solid var(--footer-border);
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+    footer {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    footer .contact,
+    footer .address {
+        margin-bottom: 30px;
+    }
+
+    footer p i {
+        margin-right: 15px;
+    }
+
+    footer .copyright {
+        padding-top: 15px;
+    }
+}
